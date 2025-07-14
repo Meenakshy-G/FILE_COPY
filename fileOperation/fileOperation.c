@@ -36,9 +36,10 @@ bool FileOperationOpenFile(FILE **pstFile,
                            const char *pstFileName, const char *pstMode)
 {
     bool blFunctionStatus = true;
+
     *pstFile = fopen(pstFileName, pstMode);
 
-    if (pstFile == NULL)
+    if (*pstFile == NULL)
     {
         perror("Error opening the file");
         fclose(*pstFile);
@@ -94,31 +95,35 @@ bool FileOperationFileSize(FILE *pstFile, uint32 *pulFileSize)
 bool FileOperationCopyContent(uint32 *pulFileSize, FILE *pstFile, 
                               FILE *pstCopyFile )
 {
-    bool blFunctionStatus = true;
-    void *pulFileStorage  = NULL;
+    bool blFunctionStatus       = true;
+    void *pulFileStorage        = NULL;
     uint32 ulFileCharacterCount = 0;
-    uint32 ulTotalCopyCount = 0;
+    uint32 ulTotalCopyCount     = 0;
 
     pulFileStorage = malloc(*pulFileSize);
 
-    if (!pulFileStorage) 
+    if (pulFileStorage != NULL) 
+    {
+
+        while ((ulFileCharacterCount = fread(pulFileStorage, SIZE, 
+                                         sizeof(pulFileStorage), pstFile)) > 0)
+        {
+            fwrite(pulFileStorage, SIZE, ulFileCharacterCount, pstCopyFile);
+            ulTotalCopyCount += ulFileCharacterCount;
+        }
+
+        if (*pulFileSize != ulTotalCopyCount)
+        {
+            perror("Error in copying the file");
+            blFunctionStatus = false;
+        }
+    }
+    else
     {
         perror("Memory allocation failed");
         blFunctionStatus = false;
     }
-
-    while ((ulFileCharacterCount = fread(pulFileStorage, SIZE, 
-                                         sizeof(pulFileStorage), pstFile)) > 0)
-    {
-        fwrite(pulFileStorage, SIZE, ulFileCharacterCount, pstCopyFile);
-        ulTotalCopyCount += ulFileCharacterCount;
-    }
-
-    if (*pulFileSize != ulTotalCopyCount)
-    {
-        perror("Error in copying the file");
-        blFunctionStatus = false;
-    }
+    free(pulFileStorage);
 
     return blFunctionStatus;
 }

@@ -12,7 +12,7 @@ DEBUG   = $(patsubst %.c,debug/%.o,$(FILE_NAMES))
 ASSEMBLY = $(patsubst %.c,release/%.s,$(FILE_NAMES))
 
 # Options
-CFLAGS = -Wall -IfileOperation
+CFLAGS = -Wall -fanalyzer -IfileOperation
 DEBUG_OPTIONS = -g -c -O0 
 FOLDERS = release debug
 VPATH = .:fileOperation

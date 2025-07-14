@@ -33,8 +33,8 @@
 //******************************************************************************
 int main(int argc, char *argv[])
 {
-    FILE *pstFilePointer                = NULL;
-    FILE *pstCopyFilePointer            = NULL;
+    FILE *pstFilePointer                 = NULL;
+    FILE *pstCopyFilePointer             = NULL;
     const char *pucFile                  = NULL;
     const char *pucFileNameCopy          = NULL;
     const char *pucCopyFileName          = NULL;
@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
     const char *pucIntermediateName      = NULL;
     const char *pucExtension             = NULL;
     const char *pucExtensionCopy         = NULL;
-    uint32 pulFileSize              = 0;
-    uint16 unFunctionStatus         = 0;
+    uint32 pulFileSize                   = 0;
+    uint16 unFunctionStatus              = 0;
     const char *pucModeRead              = "rb";
     const char *pucModeWrite             = "wb";
 
@@ -61,14 +61,23 @@ int main(int argc, char *argv[])
     pucCopyFile = basename((char *)pucFileNameCopy);
     pucExtension = strrchr(pucCopyFile, ucCharacterToSearch);
 
-    if (pucExtension)
+    if (pucExtension != NULL)
     {
         pucExtensionCopy = strdup(pucExtension);
-        *strrchr(pucCopyFile, ucCharacterToSearch) = '\0';
-        pucIntermediateName = strcat((char *)pucCopyFile,
-                                     (char *)ucNameModifier);
-        pucCopyFileName = strcat((char *)pucIntermediateName,
-                                 (char *)pucExtensionCopy);
+
+        if (pucExtensionCopy != NULL)
+        {
+            *strrchr(pucCopyFile, ucCharacterToSearch) = '\0';
+            pucIntermediateName = strcat((char *)pucCopyFile,
+                                         (char *)ucNameModifier);
+            pucCopyFileName = strcat((char *)pucIntermediateName,
+                                     (char *)pucExtensionCopy);
+        }
+        else
+        {
+            perror("Duplication of string failed");
+            unFunctionStatus = false;
+        }
     }
     else
     {

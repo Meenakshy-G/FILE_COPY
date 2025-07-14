@@ -1,6 +1,6 @@
 ## **FILE_COPY**
 
-Project to create the copy of a given input file. The copy of the file is created within the same folder, renamed into file_copy.extension.
+Project to create the copy of a given input file. The copy of the file is created within the same folder, renamed into 'file'_copy.'extension'.
 
 **Features**
 

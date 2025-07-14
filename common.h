@@ -11,7 +11,7 @@
 //******************************* Include Files ********************************
 
 //******************************* Global Types *********************************
-typedef const char uint8;
+typedef unsigned char uint8;
 typedef signed char int8;
 typedef unsigned long uint32;
 typedef signed long int32;

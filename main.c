@@ -33,28 +33,28 @@
 //******************************************************************************
 int main(int argc, char *argv[])
 {
-    FILE *pstFilePointer            = NULL;
-    FILE *pstCopyFilePointer        = NULL;
-    uint8 *pucFile                  = NULL;
-    uint8 *pucFileNameCopy          = NULL;
-    uint8 *pucCopyFileName          = NULL;
-    uint8 *pucCopyFile              = NULL;
-    uint8 ucCharacterToSearch       = '.';
-    uint8 ucNameModifier[]          = "_copy";
-    uint8 *pucIntermediateName      = NULL;
-    uint8 *pucExtension             = NULL;
-    uint8 *pucExtensionCopy         = NULL;
+    FILE *pstFilePointer                = NULL;
+    FILE *pstCopyFilePointer            = NULL;
+    const char *pucFile                  = NULL;
+    const char *pucFileNameCopy          = NULL;
+    const char *pucCopyFileName          = NULL;
+    const char *pucCopyFile              = NULL;
+    const char ucCharacterToSearch       = '.';
+    const char ucNameModifier[]          = "_copy";
+    const char *pucIntermediateName      = NULL;
+    const char *pucExtension             = NULL;
+    const char *pucExtensionCopy         = NULL;
     uint32 pulFileSize              = 0;
     uint16 unFunctionStatus         = 0;
-    uint8 *pucModeRead              = "rb";
-    uint8 *pucModeWrite             = "wb";
+    const char *pucModeRead              = "rb";
+    const char *pucModeWrite             = "wb";
 
     if (argc != INPUT_ARGUMENTS)
     {
         perror("File not given");
         unFunctionStatus = 1;
     }
-    pucFile = (uint8*)argv[FIRST_ARGUMENT];
+    pucFile = (const char*)argv[FIRST_ARGUMENT];
     pucFileNameCopy = strdup(pucFile);
     FileOperationOpenFile(&pstFilePointer, pucFile, pucModeRead);
     FileOperationFileSize(pstFilePointer, &pulFileSize);

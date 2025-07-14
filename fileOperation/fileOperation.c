@@ -33,7 +33,7 @@
 // Notes   : None
 //******************************************************************************
 bool FileOperationOpenFile(FILE **pstFile, 
-                           uint8 *pstFileName, uint8 *pstMode)
+                           const char *pstFileName, const char *pstMode)
 {
     bool blFunctionStatus = true;
     *pstFile = fopen(pstFileName, pstMode);

@@ -4,14 +4,17 @@
 //******************************************************************************
 // File    : main.c
 // Summary : Contains program to generate duplicate of a given file.
-// Note    : 
+// Note    : Header files are included.
 // Author  : Meenakshy G
 // Date    : 11/JULY/2025
 //******************************************************************************
 //******************************* Include Files ********************************
 #include <stdio.h>
 #include <string.h>
+#include <libgen.h>
+#include <stdlib.h>
 #include "common.h"
+#include "fileOperation.h"
 
 //******************************* Local Types **********************************
 
@@ -22,57 +25,62 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose :  
-// Inputs  : 
-// Outputs : 
-// Return  : None
+// Purpose : To call file operation functions to generate copy of the file.
+// Inputs  : The file for which copy is to generated.
+// Outputs : The copy of the file is created.
+// Return  : Zero for successful execution.
 // Notes   : None
 //******************************************************************************
-int main(uint16 argc, char *argv[])
+int main(int argc, char *argv[])
 {
     FILE *pstFilePointer            = NULL;
-    FILE *pstDestinationFilePointer = NULL;
-    uint8 *pucInputFileName         = NULL;
-    uint8 *pucOutputFileName        = NULL;
-    uint8 appendName[5]             = "copy";
-    int32 ulEachCharacter           = 0;
-    uint32 ulCharacterCount         = 0;
-    uint32 ulCounter                = 0;
-    uint8 ucExtensionStart          = '.';
-    uint8 ucExtensionPosition;
+    FILE *pstCopyFilePointer        = NULL;
+    uint8 *pucFile                  = NULL;
+    uint8 *pucFileNameCopy          = NULL;
+    uint8 *pucCopyFileName          = NULL;
+    uint8 *pucCopyFile              = NULL;
+    uint8 ucCharacterToSearch       = '.';
+    uint8 ucNameModifier[]          = "_copy";
+    uint8 *pucIntermediateName      = NULL;
+    uint8 *pucExtension             = NULL;
+    uint8 *pucExtensionCopy         = NULL;
+    uint32 pulFileSize              = 0;
+    uint16 unFunctionStatus         = 0;
+    uint8 *pucModeRead              = "rb";
+    uint8 *pucModeWrite             = "wb";
 
-    if(argc < 2)
+    if (argc != INPUT_ARGUMENTS)
     {
-        printf("File not given");
+        perror("File not given");
+        unFunctionStatus = 1;
     }
-    pucInputFileName = (uint8*)argv[1];
-    pstFilePointer = fopen(pucInputFileName, "r+");
+    pucFile = (uint8*)argv[FIRST_ARGUMENT];
+    pucFileNameCopy = strdup(pucFile);
+    FileOperationOpenFile(&pstFilePointer, pucFile, pucModeRead);
+    FileOperationFileSize(pstFilePointer, &pulFileSize);
+    pucCopyFile = basename((char *)pucFileNameCopy);
+    pucExtension = strrchr(pucCopyFile, ucCharacterToSearch);
 
-    if(pstFilePointer == NULL)
+    if (pucExtension)
     {
-        printf("Error opening the file");
-        fclose(pstFilePointer);
+        pucExtensionCopy = strdup(pucExtension);
+        *strrchr(pucCopyFile, ucCharacterToSearch) = '\0';
+        pucIntermediateName = strcat((char *)pucCopyFile,
+                                     (char *)ucNameModifier);
+        pucCopyFileName = strcat((char *)pucIntermediateName,
+                                 (char *)pucExtensionCopy);
     }
-    pucOutputFileName = strcat(appendName,pucInputFileName);
-    // pucOutputFileName = strcat(pucInputFileName,"_copy");
-    pstDestinationFilePointer = fopen(pucOutputFileName,"w+");
-
-    if(pstDestinationFilePointer == NULL)
+    else
     {
-        printf("Error opening the file");
-        fclose(pstDestinationFilePointer);
+        pucCopyFileName = strcat((char *)pucCopyFile,(char *)ucNameModifier);
     }
+    FileOperationOpenFile(&pstCopyFilePointer, pucCopyFileName, pucModeWrite);
+    FileOperationCopyContent(&pulFileSize, 
+                             pstFilePointer, pstCopyFilePointer);
+    FileOperationCloseFile(pstFilePointer);
+    FileOperationCloseFile(pstCopyFilePointer);
 
-    while((ulEachCharacter = fgetc(pstFilePointer)) != EOF)
-    {
-        ulCharacterCount ++;
-        fputc(ulEachCharacter, pstDestinationFilePointer);
-        fseek(pstDestinationFilePointer,0,SEEK_CUR);
-    }
-    fclose(pstFilePointer);
-    fclose(pstDestinationFilePointer);
-    printf("%ld",ulCharacterCount);
-
-    return 0;
+    return unFunctionStatus;
 }
+//******************************************************************************
 // EOF

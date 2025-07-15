@@ -1,32 +1,31 @@
-//**************************** FileCopy ****************************************
+//**************************** FileOperations **********************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved 
-//****************************************************************************** 
+//******************************************************************************
 // Summary : Contains all type definitions and forward declarations.
 // Note    : None
-//****************************************************************************** 
+//******************************************************************************
 #ifndef _FILE_OPERATION_H
 #define _FILE_OPERATION_H
 
-//******************************* Include Files ******************************** 
+//******************************* Include Files ********************************
 #include <stdio.h>
 #include <stdbool.h>
 #include "../common.h"
 
 //******************************* Global Types *********************************
 
-//***************************** Global Constants ******************************* 
+//***************************** Global Constants *******************************
 #define SIZE (1)
 
-//***************************** Global Variables ******************************* 
+//***************************** Global Variables *******************************
 
-//**************************** Forward Declarations **************************** 
-bool FileOperationOpenFile(FILE **pstFile, 
-                           const char *pstFileName, const char *pstMode);
-bool FileOperationCopyContent(uint32 *pulFileSize, FILE *pstFile, 
-                              FILE *pstCopyFile );
-bool FileOperationFileSize(FILE *pstFile, uint32 *pulFileSize);
-bool FileOperationCloseFile(FILE *pstFile);
+//**************************** Forward Declarations ****************************
+bool fileOperationOpen(FILE **pstFile, char *pstFileName, char *pstMode);
+bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstCopyFile);
+bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize);
+bool fileOperationClose(FILE *pstFile);
+
 //*********************** Inline Method Implementations ************************
 
 //******************************************************************************

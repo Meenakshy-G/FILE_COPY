@@ -1,4 +1,4 @@
-//**************************** FileCopy ****************************************
+//**************************** FileCopyApp *************************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "common.h"
 #include "fileOperation.h"
+#include "fileCopy.h"
 
 //******************************* Local Types **********************************
 
@@ -26,70 +27,28 @@
 
 //******************************.mainFunction.**********************************
 // Purpose : To call file operation functions to generate copy of the file.
-// Inputs  : The file for which copy is to generated.
+// Inputs  : The file for which copy is to be generated.
 // Outputs : The copy of the file is created.
 // Return  : Zero for successful execution.
 // Notes   : None
 //******************************************************************************
 int main(int argc, char *argv[])
 {
-    FILE *pstFilePointer                 = NULL;
-    FILE *pstCopyFilePointer             = NULL;
-    const char *pucFile                  = NULL;
-    const char *pucFileNameCopy          = NULL;
-    const char *pucCopyFileName          = NULL;
-    const char *pucCopyFile              = NULL;
-    const char ucCharacterToSearch       = '.';
-    const char ucNameModifier[]          = "_copy";
-    const char *pucIntermediateName      = NULL;
-    const char *pucExtension             = NULL;
-    const char *pucExtensionCopy         = NULL;
-    uint32 pulFileSize                   = 0;
-    uint16 unFunctionStatus              = 0;
-    const char *pucModeRead              = "rb";
-    const char *pucModeWrite             = "wb";
+    char *pcFileName = NULL;
+    char *pcFileNameDuplicate = NULL;
 
-    if (argc != INPUT_ARGUMENTS)
+    if (argc == INPUT_ARGUMENTS)
     {
-        perror("File not given");
-        unFunctionStatus = 1;
-    }
-    pucFile = (const char*)argv[FIRST_ARGUMENT];
-    pucFileNameCopy = strdup(pucFile);
-    FileOperationOpenFile(&pstFilePointer, pucFile, pucModeRead);
-    FileOperationFileSize(pstFilePointer, &pulFileSize);
-    pucCopyFile = basename((char *)pucFileNameCopy);
-    pucExtension = strrchr(pucCopyFile, ucCharacterToSearch);
-
-    if (pucExtension != NULL)
-    {
-        pucExtensionCopy = strdup(pucExtension);
-
-        if (pucExtensionCopy != NULL)
-        {
-            *strrchr(pucCopyFile, ucCharacterToSearch) = '\0';
-            pucIntermediateName = strcat((char *)pucCopyFile,
-                                         (char *)ucNameModifier);
-            pucCopyFileName = strcat((char *)pucIntermediateName,
-                                     (char *)pucExtensionCopy);
-        }
-        else
-        {
-            perror("Duplication of string failed");
-            unFunctionStatus = false;
-        }
+        pcFileName = (char *)argv[FIRST_ARGUMENT];
+        pcFileNameDuplicate = strdup(pcFileName);
+        fileCopyTool(pcFileName, pcFileNameDuplicate);
     }
     else
     {
-        pucCopyFileName = strcat((char *)pucCopyFile,(char *)ucNameModifier);
+        printf("No Command Line Arguments Given\n");
     }
-    FileOperationOpenFile(&pstCopyFilePointer, pucCopyFileName, pucModeWrite);
-    FileOperationCopyContent(&pulFileSize, 
-                             pstFilePointer, pstCopyFilePointer);
-    FileOperationCloseFile(pstFilePointer);
-    FileOperationCloseFile(pstCopyFilePointer);
 
-    return unFunctionStatus;
+    return 0;
 }
 //******************************************************************************
 // EOF

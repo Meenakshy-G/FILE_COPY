@@ -1,6 +1,6 @@
 ## **FILE_COPY**
 
-Project to create the copy of a given input file. The copy of the file is created within the same folder, renamed into 'file'_copy.'extension'.
+Project to create the copy of a given input file. The copy of the file is created within the same folder, renamed into 'file'_copy.'extension'. Input can be any file or path. 
 
 **Features**
 
@@ -9,10 +9,18 @@ Project to create the copy of a given input file. The copy of the file is create
 
 ## Building with make 
 
-$make all
+$ make all
 
 Output: FILECOPY
 
-$make clean 
+$ make clean 
 
 Output: Removes all the generated files and directories.
+
+$ make linux
+
+Output: All the assembly files and object files created in release folder
+
+$make debug 
+
+Output: All the object files with debug information created in the debug folder.

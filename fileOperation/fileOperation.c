@@ -25,38 +25,36 @@
 
 //****************************** Local Functions *******************************
 
-//****************************.FileOperationOpenFile.***************************
+//****************************.fileOperationOpen.*******************************
 // Purpose : To open the file in read or write mode.
-// Inputs  : Pointer to the file, file name and the mode to open.
+// Inputs  : pstFile - Pointer to the file.
+//           pcFileName - file name.
+//           pstMode - mode to open the file.
 // Outputs : Pointer updated to the opened file.
-// Return  : True if success else false.
+// Return  : True if file opened succesfully, else false
 // Notes   : None
 //******************************************************************************
-bool FileOperationOpenFile(FILE **pstFile, 
-                           const char *pstFileName, const char *pstMode)
+bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 {
     bool blFunctionStatus = true;
 
-    *pstFile = fopen(pstFileName, pstMode);
-
-    if (*pstFile == NULL)
+    if ((*pstFile = fopen(pcFileName, pstMode)) == NULL)
     {
-        perror("Error opening the file");
-        fclose(*pstFile);
+        perror("Cannot Open File\n");
         blFunctionStatus = false;
     }
 
     return blFunctionStatus;
 }
 
-//*************************.FileOperationCloseFile.*****************************
+//*************************.fileOperationClose.*********************************
 // Purpose : To close the already opened files.
-// Inputs  : Pointer to the file.
+// Inputs  : pstFile - Pointer to the file.
 // Outputs : None
-// Return  : True for success else false.
+// Return  : True if file closed successfully, else false.
 // Notes   : None
 //******************************************************************************
-bool FileOperationCloseFile(FILE *pstFile)
+bool fileOperationClose(FILE *pstFile)
 {
     bool blFunctionStatus = true;
 
@@ -69,46 +67,51 @@ bool FileOperationCloseFile(FILE *pstFile)
     return blFunctionStatus;
 }
 
-//***************************.FileOperationFileSize.****************************
+//***************************.fileOperationSize.********************************
 // Purpose : To find out the size of input file. 
-// Inputs  : File pointer and the pointer to size variable.
+// Inputs  : pstFile - File pointer.
+//           pulFileSize - pointer to size variable.
 // Outputs : None
-// Return  : True for successful completion.
+// Return  : True if size variable updated, else false.
 // Notes   : None
 //******************************************************************************
-bool FileOperationFileSize(FILE *pstFile, uint32 *pulFileSize)
+bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 {
+    bool blFunctionStatus = true;
+
     fseek(pstFile, 0, SEEK_END);
     *pulFileSize = ftell(pstFile);
     fseek(pstFile, 0, SEEK_SET);
 
-    return true;
+    return blFunctionStatus;
 }
 
-//****************************.FileOperationCopyContent.************************
+//****************************.fileOperationCopy.*******************************
 // Purpose : To copy contents from source file to destination file.
-// Inputs  : Source file pointer, destination file pointer, size fo file.
+// Inputs  : pstFile - Source file pointer.
+//           pstOutputFile - destination file pointer.
+//           pulFileSize - size fo file.
 // Outputs : None.
-// Return  : True for success else false.
+// Return  : True if copied successfully, else false.
 // Notes   : None
 //******************************************************************************
-bool FileOperationCopyContent(uint32 *pulFileSize, FILE *pstFile, 
-                              FILE *pstCopyFile )
+bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
 {
-    bool blFunctionStatus       = true;
-    void *pulFileStorage        = NULL;
+    bool blFunctionStatus = true;
+    void *pFileStorage = NULL;
     uint32 ulFileCharacterCount = 0;
-    uint32 ulTotalCopyCount     = 0;
+    uint32 ulTotalCopyCount = 0;
 
-    pulFileStorage = malloc(*pulFileSize);
+    pFileStorage = malloc(*pulFileSize);
 
-    if (pulFileStorage != NULL) 
+    if (pFileStorage != NULL) 
     {
 
-        while ((ulFileCharacterCount = fread(pulFileStorage, SIZE, 
-                                         sizeof(pulFileStorage), pstFile)) > 0)
+        while ((ulFileCharacterCount = fread(pFileStorage, SIZE,
+                                             sizeof(pFileStorage), 
+                                             pstFile)) > 0)
         {
-            fwrite(pulFileStorage, SIZE, ulFileCharacterCount, pstCopyFile);
+            fwrite(pFileStorage, SIZE, ulFileCharacterCount, pstOutputFile);
             ulTotalCopyCount += ulFileCharacterCount;
         }
 
@@ -123,7 +126,7 @@ bool FileOperationCopyContent(uint32 *pulFileSize, FILE *pstFile,
         perror("Memory allocation failed");
         blFunctionStatus = false;
     }
-    free(pulFileStorage);
+    free(pFileStorage);
 
     return blFunctionStatus;
 }

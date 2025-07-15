@@ -1,56 +1,57 @@
-# Compilers
+# Compiler
 CC = gcc
 CROSS_CC = aarch64-linux-gnu-gcc
 
-# Source files. 
-SRC = $(wildcard *.c fileOperation/*.c)
+# Source files
+SRC = $(wildcard *.c fileCopy/*.c fileOperation/*.c)
 FILE_NAMES = $(notdir $(SRC))
 
-# Generated files
+# Output folders
+FOLDERS = release debug
+
+# Object and assembly files
 OBJECT  = $(patsubst %.c,release/%.o,$(FILE_NAMES))
 DEBUG   = $(patsubst %.c,debug/%.o,$(FILE_NAMES))
 ASSEMBLY = $(patsubst %.c,release/%.s,$(FILE_NAMES))
 
 # Options
-CFLAGS = -Wall -fanalyzer -IfileOperation
-DEBUG_OPTIONS = -g -c -O0 
-FOLDERS = release debug
-VPATH = .:fileOperation
+CFLAGS = -Wall -IfileCopy -IfileOperation
+DEBUG_OPTIONS = -g -c -O0
+VPATH = .:fileCopy:fileOperation
 
-# Make all
-all : create_folder linux rpi 
-	$(CC) $(CFLAGS) $(OBJECT) -o FILECOPY 
+# Default target
+all : create_folder linux rpi
+	$(CC) $(CFLAGS) $(OBJECT) -o FILECOPY
 
-# Create folder for output
+# Create output folders
 create_folder :
 	mkdir -p $(FOLDERS)
 
-# Make Linux
+# Linux build
 linux : create_folder object_files assembly_files debug_files
 
-# Make assembly files into release folder
+# Assembly files
 assembly_files : create_folder $(ASSEMBLY)
 release/%.s : %.c
-	$(CC) -S $(CFLAGS) $< -o $@ 
+	$(CC) -S $(CFLAGS) $< -o $@
 
-# Make object files into release folder
+# Object files
 object_files : create_folder $(OBJECT)
 release/%.o : %.c
-	$(CC) -c $(CFLAGS) $< -o $@ 
+	$(CC) -c $(CFLAGS) $< -o $@
 
-# Make object files with debug information into debug folder
 debug_files : create_folder $(DEBUG)
 debug/%.o : %.c
 	$(CC) $(DEBUG_OPTIONS) $(CFLAGS) $< -o $@
 
-# Cross compilation for raspberry pi
+# Cross compilation for Raspberry Pi
 rpi : create_folder $(SRC)
-	$(CROSS_CC) $(CFLAGS) $(SRC) -o release/for_rpi 
+	$(CROSS_CC) $(CFLAGS) $(SRC) -o release/for_rpi
 
-# Generate executable with debugging information 
+# Debug executable
 debug : debug_files
-	$(CC) debug/* -o debug/FILECOPY_DEBUG 
+	$(CC) debug/* -o debug/FILECOPY_DEBUG
 
-# Remove all the generated folders
-clean : 
+# Clean
+clean :
 	rm -rf $(FOLDERS) FILECOPY

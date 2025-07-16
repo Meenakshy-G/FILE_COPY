@@ -35,9 +35,8 @@ bool fileCopyPerformFileCopy(FILE *pstFilePointer, FILE **ppstOutputFilePointer,
 //******************************.fileCopyTool.**********************************
 // Purpose : To copy contents from source file to destination file.
 // Inputs  : pcFileName - pointer to the input file name
-//           pcFileNameDuplicate - pointer to the copy file name.
 // Outputs : None.
-// Return  : True if copy of the file is created else false
+// Return  : True if copy of the file is created successfully else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyTool(char *pcFileName)
@@ -52,14 +51,14 @@ bool fileCopyTool(char *pcFileName)
 
     do
     {
-        if (pcFileName == NULL)
+        if (NULL == pcFileName)
         {
             printf("Input file name is NULL\n");
             break;
         }
 
         pcFileNameDuplicate = strdup(pcFileName);
-        if (pcFileNameDuplicate == NULL)
+        if (NULL == pcFileNameDuplicate)
         {
             printf("Failed to duplicate file name\n");
             break;
@@ -67,7 +66,7 @@ bool fileCopyTool(char *pcFileName)
 
         if (false == fileOperationOpen(&pstFilePointer, pcFileName, READ_MODE))
         {
-            printf("Failed to open input file\n");
+            printf("Invalid or Incorrect file Name\n");
             break;
         }
 
@@ -104,59 +103,6 @@ bool fileCopyTool(char *pcFileName)
     } while (blFunctionStatus == false);
 
     free(pcFileNameDuplicate);
-
-    return blFunctionStatus;
-}
-//************************.fileCopyFrameOutputName.*****************************
-// Purpose : To find file name if path is given.
-// Inputs  : ppcOutputFile - Pointer to the modified file name.
-//           pcExtension - Pointer to the original extension.
-//           ppcInputFileName - The file name to be modified.
-// Outputs : Pointer to the modified file name is updated.
-// Return  : True if name is successfully modified, else returns false.
-// Notes   : None
-//******************************************************************************
-bool fileCopyFrameOutputName(char **ppcOutputFile,
-                             char *pcExtension, char **ppcInputFileName)
-{
-    bool blFunctionStatus = false;
-    uint32 ulNameLength = 0;
-    uint32 ulExtensionLength = 0;
-    uint32 ulTotalLength = 0;
-    char *pcExtensionPosition = NULL;
-
-    if(NULL != pcExtension && NULL != *ppcInputFileName)
-    {
-        pcExtensionPosition = strrchr(*ppcInputFileName, EXTENSION_SEPARATION);
-        if (pcExtensionPosition != NULL)
-        {
-            ulNameLength = (uint32)(pcExtensionPosition - *ppcInputFileName);
-            ulExtensionLength = strlen(pcExtension);
-            ulTotalLength = ulNameLength + strlen(MODIFIER) + 
-                            ulExtensionLength + 1;
-
-            *ppcOutputFile = (char *)malloc(ulTotalLength);
-            if (*ppcOutputFile != NULL)
-            {
-                strncpy(*ppcOutputFile, *ppcInputFileName, ulNameLength);
-                strcat(*ppcOutputFile, MODIFIER);
-                strcat(*ppcOutputFile, pcExtension);
-                blFunctionStatus = true;
-            }
-            else
-            {
-                printf("Memory allocation failed\n");
-            }
-        }
-        else
-        {
-            printf("Cannot find extension\n");
-        }
-    }
-    else
-    {
-        printf("Invalid input for extension or file name\n");
-    }
 
     return blFunctionStatus;
 }
@@ -236,6 +182,60 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
                 printf("Memory allocation failed\n");
             }
         }
+    }
+
+    return blFunctionStatus;
+}
+
+//************************.fileCopyFrameOutputName.*****************************
+// Purpose : To form the final output file name.
+// Inputs  : ppcOutputFile - Pointer to the modified file name.
+//           pcExtension - Pointer to the original extension.
+//           ppcInputFileName - The file name to be modified.
+// Outputs : Pointer to the modified file name is updated.
+// Return  : True if name is successfully modified, else returns false.
+// Notes   : None
+//******************************************************************************
+bool fileCopyFrameOutputName(char **ppcOutputFile,
+                             char *pcExtension, char **ppcInputFileName)
+{
+    bool blFunctionStatus = false;
+    uint32 ulNameLength = 0;
+    uint32 ulExtensionLength = 0;
+    uint32 ulTotalLength = 0;
+    char *pcExtensionPosition = NULL;
+
+    if(NULL != pcExtension && NULL != *ppcInputFileName)
+    {
+        pcExtensionPosition = strrchr(*ppcInputFileName, EXTENSION_SEPARATION);
+        if (pcExtensionPosition != NULL)
+        {
+            ulNameLength = (uint32)(pcExtensionPosition - *ppcInputFileName);
+            ulExtensionLength = strlen(pcExtension);
+            ulTotalLength = ulNameLength + strlen(MODIFIER) + 
+                            ulExtensionLength + 1;
+
+            *ppcOutputFile = (char *)malloc(ulTotalLength);
+            if (*ppcOutputFile != NULL)
+            {
+                strncpy(*ppcOutputFile, *ppcInputFileName, ulNameLength);
+                strcat(*ppcOutputFile, MODIFIER);
+                strcat(*ppcOutputFile, pcExtension);
+                blFunctionStatus = true;
+            }
+            else
+            {
+                printf("Memory allocation failed\n");
+            }
+        }
+        else
+        {
+            printf("Cannot find extension\n");
+        }
+    }
+    else
+    {
+        printf("Invalid input for extension or file name\n");
     }
 
     return blFunctionStatus;

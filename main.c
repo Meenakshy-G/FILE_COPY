@@ -29,14 +29,14 @@
 // Purpose : To call file operation functions to generate copy of the file.
 // Inputs  : The file for which copy is to be generated.
 // Outputs : The copy of the file is created.
-// Return  : Zero for successful execution.
+// Return  : Zero for successfully creating the copy file.
 // Notes   : None
 //******************************************************************************
 int main(int argc, char *argv[])
 {
     char *pcFileName = NULL;
 
-    if (argc == INPUT_ARGUMENTS)
+    if (INPUT_ARGUMENTS == argc)
     {
         pcFileName = (char *)argv[FIRST_ARGUMENT];
         fileCopyTool(pcFileName);

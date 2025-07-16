@@ -36,12 +36,22 @@
 //******************************************************************************
 bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 {
-    bool blFunctionStatus = true;
+    bool blFunctionStatus = false;
 
-    if ((*pstFile = fopen(pcFileName, pstMode)) == NULL)
+    if (NULL != pstFile && NULL != pcFileName && NULL != pstMode)
     {
-        perror("Cannot Open File\n");
-        blFunctionStatus = false;
+        if (NULL != (*pstFile = fopen(pcFileName, pstMode)))
+        {
+            blFunctionStatus = true;
+        }
+        else
+        {
+            printf("Error opening file\n");
+        }
+    }
+    else
+    {
+        printf("Input pointer is NULL");
     }
 
     return blFunctionStatus;
@@ -56,19 +66,29 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 //******************************************************************************
 bool fileOperationClose(FILE *pstFile)
 {
-    bool blFunctionStatus = true;
+    bool blFunctionStatus = false;
 
-    if (fclose(pstFile) != 0)
+    if (pstFile != NULL)
     {
-        perror("Error closing the file");
-        blFunctionStatus = false;
+        if (0 == fclose(pstFile))
+        {
+            blFunctionStatus = true;
+        }
+        else
+        {
+            perror("Error closing the file");
+        }
+    }
+    else
+    {
+        printf("File pointer is NULL");
     }
 
     return blFunctionStatus;
 }
 
 //***************************.fileOperationSize.********************************
-// Purpose : To find out the size of input file. 
+// Purpose : To find out the size of input file.
 // Inputs  : pstFile - File pointer.
 //           pulFileSize - pointer to size variable.
 // Outputs : None
@@ -77,11 +97,19 @@ bool fileOperationClose(FILE *pstFile)
 //******************************************************************************
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 {
-    bool blFunctionStatus = true;
+    bool blFunctionStatus = false;
 
-    fseek(pstFile, 0, SEEK_END);
-    *pulFileSize = ftell(pstFile);
-    fseek(pstFile, 0, SEEK_SET);
+    if (NULL != pstFile && NULL != pulFileSize)
+    {
+        fseek(pstFile, 0, SEEK_END);
+        *pulFileSize = ftell(pstFile);
+        fseek(pstFile, 0, SEEK_SET);
+        blFunctionStatus = true;
+    }
+    else
+    {
+        printf("Input pointer are NULL");
+    }
 
     return blFunctionStatus;
 }
@@ -97,34 +125,38 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 //******************************************************************************
 bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
 {
-    bool blFunctionStatus = true;
+    bool blFunctionStatus = false;
     void *pFileStorage = NULL;
     uint32 ulFileCharacterCount = 0;
     uint32 ulTotalCopyCount = 0;
 
-    pFileStorage = malloc(*pulFileSize);
-
-    if (pFileStorage != NULL) 
+    if (NULL != pulFileSize && NULL != pstFile && NULL != pstOutputFile)
     {
-
-        while ((ulFileCharacterCount = fread(pFileStorage, SIZE,
-                                             sizeof(pFileStorage), 
-                                             pstFile)) > 0)
+        pFileStorage = malloc(*pulFileSize);
+        if (pFileStorage != NULL)
         {
-            fwrite(pFileStorage, SIZE, ulFileCharacterCount, pstOutputFile);
-            ulTotalCopyCount += ulFileCharacterCount;
-        }
 
-        if (*pulFileSize != ulTotalCopyCount)
-        {
-            perror("Error in copying the file");
-            blFunctionStatus = false;
+            while ((ulFileCharacterCount = fread(pFileStorage, SIZE,
+                                                 sizeof(pFileStorage),
+                                                 pstFile)) > 0)
+            {
+                fwrite(pFileStorage, SIZE, ulFileCharacterCount, pstOutputFile);
+                ulTotalCopyCount += ulFileCharacterCount;
+            }
+
+            if (*pulFileSize == ulTotalCopyCount)
+            {
+                blFunctionStatus = true;
+            }
+            else
+            {
+                printf("Copying Failed\n");
+            }
         }
-    }
-    else
-    {
-        perror("Memory allocation failed");
-        blFunctionStatus = false;
+        else
+        {
+            perror("Memory allocation failed");
+        }
     }
     free(pFileStorage);
 

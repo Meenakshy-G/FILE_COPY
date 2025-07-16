@@ -19,11 +19,13 @@
 #define FOLDER_SEPARATION ('/')
 #define EXTENSION_SEPARATION ('.')
 #define MODIFIER ("_copy")
+#define READ_MODE ("rb")
+#define WRITE_MODE ("wb")
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-bool fileCopyTool(char *pcFileName, char *pcFileNameDuplicate);
+bool fileCopyTool(char *pcFileName);
 
 //*********************** Inline Method Implementations ************************
 

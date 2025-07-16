@@ -35,13 +35,11 @@
 int main(int argc, char *argv[])
 {
     char *pcFileName = NULL;
-    char *pcFileNameDuplicate = NULL;
 
     if (argc == INPUT_ARGUMENTS)
     {
         pcFileName = (char *)argv[FIRST_ARGUMENT];
-        pcFileNameDuplicate = strdup(pcFileName);
-        fileCopyTool(pcFileName, pcFileNameDuplicate);
+        fileCopyTool(pcFileName);
     }
     else
     {

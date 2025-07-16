@@ -38,4 +38,4 @@ Ouput : FILECOPYTOOL
 
 ## To Run Executable
 
-$ ./FILECOPYTOOL <filename or path>
+$ ./FILECOPYTOOL "filename or path"

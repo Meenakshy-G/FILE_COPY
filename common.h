@@ -2,7 +2,8 @@
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved 
 //******************************************************************************
-// Summary : Contains all type definitions and global constants.
+// Summary : Contains all type definitions and global constants required
+//           in every file in the current project.
 // Note    : None
 //******************************************************************************
 #ifndef _COMMON_H

@@ -39,7 +39,22 @@ int main(int argc, char *argv[])
     if (INPUT_ARGUMENTS == argc)
     {
         pcFileName = (char *)argv[FIRST_ARGUMENT];
-        fileCopyTool(pcFileName);
+
+        if (NULL != pcFileName)
+        {
+            if (true == fileCopyTool(pcFileName))
+            {
+                printf("File Copy Created Successfully\n");
+            }
+            else
+            {
+                printf("Cannot Create File copy\n");
+            }
+        }
+        else
+        {
+            printf("Cannot obtain input file argument\n");
+        }
     }
     else
     {

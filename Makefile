@@ -21,7 +21,7 @@ VPATH = .:fileCopy:fileOperation
 
 # Default target
 all : create_folder linux rpi
-	$(CC) $(CFLAGS) $(OBJECT) -o FILECOPY
+	$(CC) $(CFLAGS) $(OBJECT) -o FILECOPYTOOL
 
 # Create output folders
 create_folder :
@@ -46,11 +46,11 @@ debug/%.o : %.c
 
 # Cross compilation for Raspberry Pi
 rpi : create_folder $(SRC)
-	$(CROSS_CC) $(CFLAGS) $(SRC) -o release/for_rpi
+	$(CROSS_CC) $(CFLAGS) $(SRC) -o release/FILECOPYTOOL_for_rpi
 
 # Debug executable
 debug : debug_files
-	$(CC) debug/* -o debug/FILECOPY_DEBUG
+	$(CC) debug/* -o debug/FILECOPYTOOL_DEBUG
 
 # Clean
 clean :

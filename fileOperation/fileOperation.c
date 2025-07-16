@@ -30,9 +30,9 @@
 // Inputs  : pstFile - Pointer to the file.
 //           pcFileName - file name.
 //           pstMode - mode to open the file.
-// Outputs : Pointer updated to the opened file.
-// Return  : True if file opened succesfully, else false
-// Notes   : None
+// Outputs : File pointer updated to the opened file.
+// Return  : True if file opened succesfully, else false.
+// Notes   : None.
 //******************************************************************************
 bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 {
@@ -60,9 +60,9 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 //*************************.fileOperationClose.*********************************
 // Purpose : To close the already opened files.
 // Inputs  : pstFile - Pointer to the file.
-// Outputs : None
+// Outputs : None.
 // Return  : True if file closed successfully, else false.
-// Notes   : None
+// Notes   : None.
 //******************************************************************************
 bool fileOperationClose(FILE *pstFile)
 {
@@ -91,9 +91,9 @@ bool fileOperationClose(FILE *pstFile)
 // Purpose : To find out the size of input file.
 // Inputs  : pstFile - File pointer.
 //           pulFileSize - pointer to size variable.
-// Outputs : None
+// Outputs : None.
 // Return  : True if size variable updated, else false.
-// Notes   : None
+// Notes   : None.
 //******************************************************************************
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 {
@@ -120,8 +120,8 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 //           pstOutputFile - destination file pointer.
 //           pulFileSize - size fo file.
 // Outputs : None.
-// Return  : True if copied successfully, else false.
-// Notes   : None
+// Return  : True if file contents copied successfully, else false.
+// Notes   : None.
 //******************************************************************************
 bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
 {
@@ -133,9 +133,9 @@ bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
     if (NULL != pulFileSize && NULL != pstFile && NULL != pstOutputFile)
     {
         pFileStorage = malloc(*pulFileSize);
+
         if (pFileStorage != NULL)
         {
-
             while ((ulFileCharacterCount = fread(pFileStorage, SIZE,
                                                  sizeof(pFileStorage),
                                                  pstFile)) > 0)
@@ -155,9 +155,10 @@ bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
         }
         else
         {
-            perror("Memory allocation failed");
+            printf("Memory allocation failed\n");
         }
     }
+
     free(pFileStorage);
 
     return blFunctionStatus;

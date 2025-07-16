@@ -2,7 +2,8 @@
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved 
 //******************************************************************************
-// Summary : Contains all type definitions and forward declarations.
+// Summary : Contains all global constants and forward declarations 
+//           required for fileCopy.c file functions.
 // Note    : None
 //******************************************************************************
 #ifndef _FILE_COPY_H

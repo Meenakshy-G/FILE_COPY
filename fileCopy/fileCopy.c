@@ -2,9 +2,10 @@
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
-// File    : fileOperation.c
-// Summary : Contains the functions which does the operations on file.
-// Note    : Header file included.
+// File    : fileCopy.c
+// Summary : The helper file to assist in the file copy process.
+// Note    : Contains functions that calls the file operation functions. 
+//           Header file included.
 // Author  : Meenakshy G
 // Date    : 11/JULY/2025
 //******************************************************************************
@@ -48,6 +49,8 @@ bool fileCopyTool(char *pcFileName)
     char *pcFileNameDuplicate = NULL;
     char *pcInputFileName = NULL;
     char *pcOutputFileName = NULL;
+    bool blFlagTooFreeDuplicateName = false;
+    bool blFlagtoFreeOutputName = false;
 
     do
     {
@@ -58,9 +61,12 @@ bool fileCopyTool(char *pcFileName)
         }
 
         pcFileNameDuplicate = strdup(pcFileName);
+        blFlagTooFreeDuplicateName = true;
+
         if (NULL == pcFileNameDuplicate)
         {
             printf("Failed to duplicate file name\n");
+            blFlagTooFreeDuplicateName = false;
             break;
         }
 
@@ -87,6 +93,7 @@ bool fileCopyTool(char *pcFileName)
                                              &pcOutputFileName))
         {
             printf("Failed to form output file name\n");
+            blFlagtoFreeOutputName = true;
             break;
         }
 
@@ -95,14 +102,26 @@ bool fileCopyTool(char *pcFileName)
                                              pcOutputFileName, &ulFileSize))
         {
             printf("Failed to perform file copy\n");
+            blFlagtoFreeOutputName = true;
             break;
         }
 
+        blFlagtoFreeOutputName = true;
         blFunctionStatus = true;
 
     } while (blFunctionStatus == false);
 
-    free(pcFileNameDuplicate);
+    // free the dynamic memory allocated using strdup.
+    if (true == blFlagTooFreeDuplicateName)
+    {
+        free(pcFileNameDuplicate);
+    }
+
+    // free the dynamic memory allocated using malloc.
+    if (true == blFlagtoFreeOutputName)
+    {
+        free(pcOutputFileName);
+    }
 
     return blFunctionStatus;
 }
@@ -122,6 +141,7 @@ bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate)
     if (NULL != pcFileNameDuplicate)
     {
         *pcInputFile = strrchr(pcFileNameDuplicate, FOLDER_SEPARATION);
+
         if (NULL != *pcInputFile)
         {
             (*pcInputFile)++;
@@ -130,6 +150,7 @@ bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate)
         {
             *pcInputFile = pcFileNameDuplicate;
         }
+
         if (NULL != *pcInputFile)
         {
             blFunctionStatus = true;
@@ -143,7 +164,7 @@ bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate)
 // Purpose : To add extension to the copy file name.
 // Inputs  : pcInputFileName - Pointer to the input file name.
 //           ppcOutputFileName - Double pointer to the duplicate file name.
-// Outputs : None
+// Outputs : ppcOutputFileName is updated with modified output name.
 // Return  : True if extension is successfully added, else returns false.
 // Notes   : None
 //******************************************************************************
@@ -208,14 +229,15 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
     if(NULL != pcExtension && NULL != *ppcInputFileName)
     {
         pcExtensionPosition = strrchr(*ppcInputFileName, EXTENSION_SEPARATION);
+
         if (pcExtensionPosition != NULL)
         {
             ulNameLength = (uint32)(pcExtensionPosition - *ppcInputFileName);
             ulExtensionLength = strlen(pcExtension);
             ulTotalLength = ulNameLength + strlen(MODIFIER) + 
                             ulExtensionLength + 1;
-
             *ppcOutputFile = (char *)malloc(ulTotalLength);
+
             if (*ppcOutputFile != NULL)
             {
                 strncpy(*ppcOutputFile, *ppcInputFileName, ulNameLength);

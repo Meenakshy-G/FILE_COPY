@@ -54,4 +54,4 @@ debug : debug_files
 
 # Clean
 clean :
-	rm -rf $(FOLDERS) FILECOPY
+	rm -rf $(FOLDERS) FILECOPYTOOL

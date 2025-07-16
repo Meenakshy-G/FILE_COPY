@@ -115,6 +115,7 @@ bool fileCopyTool(char *pcFileName)
     if (true == blFlagTooFreeDuplicateName)
     {
         free(pcFileNameDuplicate);
+        pcFileNameDuplicate = NULL;
     }
 
     // free the dynamic memory allocated using malloc.
@@ -174,9 +175,9 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
     uint32 ulLength = 0;
     char *pcExtension = NULL;
 
-    if (NULL != pcInputFileName)
+    if (NULL != pcInputFileName && NULL != ppcOutputFileName)
     {
-        pcExtension = strrchr(pcInputFileName, EXTENSION_SEPARATION);
+        pcExtension = strchr(pcInputFileName, EXTENSION_SEPARATION);
 
         if (pcExtension != NULL)
         {
@@ -228,7 +229,7 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
 
     if(NULL != pcExtension && NULL != *ppcInputFileName)
     {
-        pcExtensionPosition = strrchr(*ppcInputFileName, EXTENSION_SEPARATION);
+        pcExtensionPosition = strchr(*ppcInputFileName, EXTENSION_SEPARATION);
 
         if (pcExtensionPosition != NULL)
         {

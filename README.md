@@ -34,7 +34,7 @@ $ cmake -S. -B Build && cmake --build Build
 
 Ouput : FILECOPYTOOL 
         generated within current source directory and all other 
-        remaing release and debug folders created inside Build directory.
+        remaining release and debug folders created inside Build directory.
 
 ## To Run Executable
 

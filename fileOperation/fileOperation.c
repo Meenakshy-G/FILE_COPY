@@ -31,7 +31,7 @@
 //           pcFileName - file name.
 //           pstMode - mode to open the file.
 // Outputs : File pointer pstFile updated to point the opened file.
-// Return  : True if file opened succesfully, else false.
+// Return  : blFunctionStatus - True if file opened succesfully, else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
@@ -61,7 +61,7 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 // Purpose : To close the already opened files.
 // Inputs  : pstFile - Pointer to the file.
 // Outputs : None.
-// Return  : True if file closed successfully, else false.
+// Return  : blFunctionStatus - True if file closed successfully, else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationClose(FILE *pstFile)
@@ -92,7 +92,7 @@ bool fileOperationClose(FILE *pstFile)
 // Inputs  : pstFile - File pointer.
 //           pulFileSize - Pointer to size variable.
 // Outputs : None.
-// Return  : True if size variable updated, else false.
+// Return  : blFunctionStatus - True if size variable updated, else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
@@ -120,7 +120,8 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 //           pstOutputFile - destination file pointer.
 //           pulFileSize - size fo file.
 // Outputs : None.
-// Return  : True if file contents copied successfully, else false.
+// Return  : blFunctionStatus - True if file contents copied successfully, 
+//           else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)

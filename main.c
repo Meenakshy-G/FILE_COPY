@@ -31,7 +31,7 @@
 // Inputs  : The command line argument, input file name or path, that is 
 //           pointed by pcFileName.
 // Outputs : The copy of the file is created.
-// Return  : Zero for successfully creating the copy file.
+// Return  : Zero.
 // Notes   : None
 //******************************************************************************
 int main(int argc, char *argv[])

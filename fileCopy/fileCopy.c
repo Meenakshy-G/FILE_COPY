@@ -37,7 +37,8 @@ bool fileCopyPerformFileCopy(FILE *pstFilePointer, FILE **ppstOutputFilePointer,
 // Purpose : To copy contents from source file to destination file.
 // Inputs  : pcFileName - pointer to the input file name
 // Outputs : None.
-// Return  : True if copy of the file is created successfully else false.
+// Return  : blFunctionStatus - True if copy of the file is created 
+//           successfully else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyTool(char *pcFileName)
@@ -134,7 +135,8 @@ bool fileCopyTool(char *pcFileName)
 //           pcFileNameDuplicate - Pointer to the duplicate file name.
 // Outputs : pcInputFile pointer is updated to point file name only, by 
 //           removing path, if path given.
-// Return  : True if path is successfully removed, else returns false.
+// Return  : blFunctionStatus - True if path is successfully removed, 
+//           else returns false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate)
@@ -168,7 +170,8 @@ bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate)
 // Inputs  : pcInputFileName - Pointer to the input file name.
 //           ppcOutputFileName - Double pointer to the duplicate file name.
 // Outputs : ppcOutputFileName is updated with modified output name.
-// Return  : True if extension is successfully added, else returns false.
+// Return  : blFunctionStatus - True if extension is successfully added, 
+//           else returns false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
@@ -217,7 +220,8 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
 //           pcExtension - Pointer to the original extension.
 //           ppcInputFileName - Pointer to the file name to be modified.
 // Outputs : Pointer ppcOutputFile is updated to the modified file name.
-// Return  : True if name is successfully modified, else returns false.
+// Return  : blFunctionStatus - True if name is successfully modified, 
+//           else returns false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyFrameOutputName(char **ppcOutputFile,
@@ -273,7 +277,8 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
 //           pcOutputFileName - Pointer to the output file name.
 //           pulFileSize - Pointer to the size of the file.
 // Outputs : None
-// Return  : True if copying is successfull, else returns false.
+// Return  : blFunctionStatus - True if copying is successfull, 
+//           else returns false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyPerformFileCopy(FILE *pstFilePointer, FILE **ppstOutputFilePointer,

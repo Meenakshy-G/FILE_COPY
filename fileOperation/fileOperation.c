@@ -30,7 +30,7 @@
 // Inputs  : pstFile - Pointer to the file.
 //           pcFileName - file name.
 //           pstMode - mode to open the file.
-// Outputs : File pointer updated to the opened file.
+// Outputs : File pointer pstFile updated to point the opened file.
 // Return  : True if file opened succesfully, else false.
 // Notes   : None.
 //******************************************************************************
@@ -38,7 +38,7 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 {
     bool blFunctionStatus = false;
 
-    if (NULL != pstFile && NULL != pcFileName && NULL != pstMode)
+    if ((NULL != pstFile) && (NULL != pcFileName) && (NULL != pstMode))
     {
         if (NULL != (*pstFile = fopen(pcFileName, pstMode)))
         {
@@ -90,7 +90,7 @@ bool fileOperationClose(FILE *pstFile)
 //***************************.fileOperationSize.********************************
 // Purpose : To find out the size of input file.
 // Inputs  : pstFile - File pointer.
-//           pulFileSize - pointer to size variable.
+//           pulFileSize - Pointer to size variable.
 // Outputs : None.
 // Return  : True if size variable updated, else false.
 // Notes   : None.
@@ -99,7 +99,7 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 {
     bool blFunctionStatus = false;
 
-    if (NULL != pstFile && NULL != pulFileSize)
+    if ((NULL != pstFile) && (NULL != pulFileSize))
     {
         fseek(pstFile, 0, SEEK_END);
         *pulFileSize = ftell(pstFile);
@@ -130,7 +130,7 @@ bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
     uint32 ulFileCharacterCount = 0;
     uint32 ulTotalCopyCount = 0;
 
-    if (NULL != pulFileSize && NULL != pstFile && NULL != pstOutputFile)
+    if ((NULL != pulFileSize) && (NULL != pstFile) && (NULL != pstOutputFile))
     {
         pFileStorage = malloc(*pulFileSize);
 
@@ -160,6 +160,7 @@ bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
     }
 
     free(pFileStorage);
+    pFileStorage = NULL;
 
     return blFunctionStatus;
 }

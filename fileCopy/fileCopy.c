@@ -49,8 +49,8 @@ bool fileCopyTool(char *pcFileName)
     char *pcFileNameDuplicate = NULL;
     char *pcInputFileName = NULL;
     char *pcOutputFileName = NULL;
-    bool blFlagTooFreeDuplicateName = false;
-    bool blFlagtoFreeOutputName = false;
+    bool blFlagToFreeDuplicateName = false;
+    bool blFlagToFreeOutputName = false;
 
     do
     {
@@ -61,12 +61,12 @@ bool fileCopyTool(char *pcFileName)
         }
 
         pcFileNameDuplicate = strdup(pcFileName);
-        blFlagTooFreeDuplicateName = true;
+        blFlagToFreeDuplicateName = true;
 
         if (NULL == pcFileNameDuplicate)
         {
             printf("Failed to duplicate file name\n");
-            blFlagTooFreeDuplicateName = false;
+            blFlagToFreeDuplicateName = false;
             break;
         }
 
@@ -93,7 +93,7 @@ bool fileCopyTool(char *pcFileName)
                                              &pcOutputFileName))
         {
             printf("Failed to form output file name\n");
-            blFlagtoFreeOutputName = true;
+            blFlagToFreeOutputName = true;
             break;
         }
 
@@ -102,26 +102,27 @@ bool fileCopyTool(char *pcFileName)
                                              pcOutputFileName, &ulFileSize))
         {
             printf("Failed to perform file copy\n");
-            blFlagtoFreeOutputName = true;
+            blFlagToFreeOutputName = true;
             break;
         }
 
-        blFlagtoFreeOutputName = true;
+        blFlagToFreeOutputName = true;
         blFunctionStatus = true;
 
     } while (blFunctionStatus == false);
 
     // free the dynamic memory allocated using strdup.
-    if (true == blFlagTooFreeDuplicateName)
+    if (true == blFlagToFreeDuplicateName)
     {
         free(pcFileNameDuplicate);
         pcFileNameDuplicate = NULL;
     }
 
     // free the dynamic memory allocated using malloc.
-    if (true == blFlagtoFreeOutputName)
+    if (true == blFlagToFreeOutputName)
     {
         free(pcOutputFileName);
+        pcOutputFileName = NULL;
     }
 
     return blFunctionStatus;
@@ -129,9 +130,10 @@ bool fileCopyTool(char *pcFileName)
 
 //************************.fileCopyRemovePath.**********************************
 // Purpose : To find file name if path is given.
-// Inputs  : pcInputFile - Pointer to the input file name.
+// Inputs  : pcInputFile - Pointer to the input file name to be updated.
 //           pcFileNameDuplicate - Pointer to the duplicate file name.
-// Outputs : Modified input file name pointer - pcInputFile.
+// Outputs : pcInputFile pointer is updated to point file name only, by 
+//           removing path, if path given.
 // Return  : True if path is successfully removed, else returns false.
 // Notes   : None
 //******************************************************************************
@@ -175,7 +177,7 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
     uint32 ulLength = 0;
     char *pcExtension = NULL;
 
-    if (NULL != pcInputFileName && NULL != ppcOutputFileName)
+    if ((NULL != pcInputFileName) && (NULL != ppcOutputFileName))
     {
         pcExtension = strchr(pcInputFileName, EXTENSION_SEPARATION);
 
@@ -211,10 +213,10 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
 
 //************************.fileCopyFrameOutputName.*****************************
 // Purpose : To form the final output file name.
-// Inputs  : ppcOutputFile - Pointer to the modified file name.
+// Inputs  : ppcOutputFile - Pointer to the output file name.
 //           pcExtension - Pointer to the original extension.
-//           ppcInputFileName - The file name to be modified.
-// Outputs : Pointer to the modified file name is updated.
+//           ppcInputFileName - Pointer to the file name to be modified.
+// Outputs : Pointer ppcOutputFile is updated to the modified file name.
 // Return  : True if name is successfully modified, else returns false.
 // Notes   : None
 //******************************************************************************
@@ -227,7 +229,7 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
     uint32 ulTotalLength = 0;
     char *pcExtensionPosition = NULL;
 
-    if(NULL != pcExtension && NULL != *ppcInputFileName)
+    if((NULL != pcExtension) && (NULL != *ppcInputFileName))
     {
         pcExtensionPosition = strchr(*ppcInputFileName, EXTENSION_SEPARATION);
 
@@ -258,7 +260,7 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
     }
     else
     {
-        printf("Invalid input for extension or file name\n");
+        printf("Cannot frame output name\n");
     }
 
     return blFunctionStatus;
@@ -278,31 +280,38 @@ bool fileCopyPerformFileCopy(FILE *pstFilePointer, FILE **ppstOutputFilePointer,
                              char *pcOutputFileName, uint32 *pulFileSize)
 {
     bool blFunctionStatus = false;
-
-    if (true == fileOperationOpen(ppstOutputFilePointer,
-                                  pcOutputFileName, WRITE_MODE))
+    if ((NULL != pulFileSize) && (NULL != pstFilePointer) && 
+        (NULL != pcOutputFileName))
     {
-        if (true == fileOperationCopy(pulFileSize, pstFilePointer,
-                                      *ppstOutputFilePointer))
+        if (true == fileOperationOpen(ppstOutputFilePointer,
+                                      pcOutputFileName, WRITE_MODE))
         {
-            if ((true == fileOperationClose(pstFilePointer)) &&
-                (true == fileOperationClose(*ppstOutputFilePointer)))
+            if (true == fileOperationCopy(pulFileSize, pstFilePointer,
+                                          *ppstOutputFilePointer))
             {
-                blFunctionStatus = true;
+                if ((true == fileOperationClose(pstFilePointer)) &&
+                    (true == fileOperationClose(*ppstOutputFilePointer)))
+                {
+                    blFunctionStatus = true;
+                }
+                else
+                {
+                    printf("Cannot close file\n");
+                }
             }
             else
             {
-                printf("Cannot close file\n");
+                printf("Cannot Copy File\n");
             }
         }
         else
         {
-            printf("Cannot Copy File\n");
+            printf("Failed to open output file\n");
         }
     }
     else
     {
-        printf("Failed to open output file\n");
+        printf("Failed to perform file copy: Invalid Pointers\n");
     }
 
     return blFunctionStatus;

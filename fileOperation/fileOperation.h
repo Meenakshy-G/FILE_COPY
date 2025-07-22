@@ -23,7 +23,7 @@
 
 //**************************** Forward Declarations ****************************
 bool fileOperationOpen(FILE **pstFile, char *pstFileName, char *pstMode);
-bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstCopyFile);
+bool fileOperationCopy(uint32 pulFileSize, FILE *pstFile, FILE *pstOutputFile);
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize);
 bool fileOperationClose(FILE *pstFile);
 

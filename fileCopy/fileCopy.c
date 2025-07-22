@@ -28,10 +28,10 @@
 //****************************** Local Functions *******************************
 bool fileCopyFrameOutputName(char **ppcOutputFile,
                              char *pcExtension, char **ppcInputFileName);
-bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate);
+bool fileCopyExtractNameFromPath(char **pcInputFile, char *pcFileNameDuplicate);
 bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName);
-bool fileCopyPerformFileCopy(FILE *pstFilePointer, FILE **ppstOutputFilePointer,
-                             char *pcOutputFileName, uint32 *pulFileSize);
+bool fileCopyPerformFileCopy(FILE *pstFilePointer,char *pcOutputFileName, 
+                             uint32 pulFileSize);
 
 //******************************.fileCopyTool.**********************************
 // Purpose : To copy contents from source file to destination file.
@@ -45,13 +45,12 @@ bool fileCopyTool(char *pcFileName)
 {
     bool blFunctionStatus = false;
     FILE *pstFilePointer = NULL;
-    FILE *pstOutputFilePointer = NULL;
     uint32 ulFileSize = 0;
     char *pcFileNameDuplicate = NULL;
     char *pcInputFileName = NULL;
     char *pcOutputFileName = NULL;
-    bool blFlagToFreeDuplicateName = false;
-    bool blFlagToFreeOutputName = false;
+    bool blCheckDuplicateNameExist = false;
+    bool blCheckOutputNameExist = false;
 
     do
     {
@@ -62,12 +61,12 @@ bool fileCopyTool(char *pcFileName)
         }
 
         pcFileNameDuplicate = strdup(pcFileName);
-        blFlagToFreeDuplicateName = true;
+        blCheckDuplicateNameExist = true;
 
         if (NULL == pcFileNameDuplicate)
         {
             printf("Failed to duplicate file name\n");
-            blFlagToFreeDuplicateName = false;
+            blCheckDuplicateNameExist = false;
             break;
         }
 
@@ -83,7 +82,7 @@ bool fileCopyTool(char *pcFileName)
             break;
         }
 
-        if (false == fileCopyRemovePath(&pcInputFileName,
+        if (false == fileCopyExtractNameFromPath(&pcInputFileName,
                                         pcFileNameDuplicate))
         {
             printf("Failed to extract file name from path\n");
@@ -94,33 +93,32 @@ bool fileCopyTool(char *pcFileName)
                                              &pcOutputFileName))
         {
             printf("Failed to form output file name\n");
-            blFlagToFreeOutputName = true;
+            blCheckOutputNameExist = true;
             break;
         }
 
-        if (false == fileCopyPerformFileCopy(pstFilePointer,
-                                             &pstOutputFilePointer,
-                                             pcOutputFileName, &ulFileSize))
+        if (false == fileCopyPerformFileCopy(pstFilePointer, pcOutputFileName, 
+                                             ulFileSize))
         {
             printf("Failed to perform file copy\n");
-            blFlagToFreeOutputName = true;
+            blCheckOutputNameExist = true;
             break;
         }
 
-        blFlagToFreeOutputName = true;
+        blCheckOutputNameExist = true;
         blFunctionStatus = true;
 
     } while (blFunctionStatus == false);
 
     // free the dynamic memory allocated using strdup.
-    if (true == blFlagToFreeDuplicateName)
+    if (true == blCheckDuplicateNameExist)
     {
         free(pcFileNameDuplicate);
         pcFileNameDuplicate = NULL;
     }
 
     // free the dynamic memory allocated using malloc.
-    if (true == blFlagToFreeOutputName)
+    if (true == blCheckOutputNameExist)
     {
         free(pcOutputFileName);
         pcOutputFileName = NULL;
@@ -129,17 +127,16 @@ bool fileCopyTool(char *pcFileName)
     return blFunctionStatus;
 }
 
-//************************.fileCopyRemovePath.**********************************
-// Purpose : To find file name if path is given.
-// Inputs  : pcInputFile - Pointer to the input file name to be updated.
-//           pcFileNameDuplicate - Pointer to the duplicate file name.
+//************************.fileCopyExtractNameFromPath.*************************
+// Purpose : To extract file name from path if path is given.
+// Inputs  : pcFileNameDuplicate - Pointer to the duplicate file name.
 // Outputs : pcInputFile pointer is updated to point file name only, by 
 //           removing path, if path given.
 // Return  : blFunctionStatus - True if path is successfully removed, 
 //           else returns false.
 // Notes   : None
 //******************************************************************************
-bool fileCopyRemovePath(char **pcInputFile, char *pcFileNameDuplicate)
+bool fileCopyExtractNameFromPath(char **pcInputFile, char *pcFileNameDuplicate)
 {
     bool blFunctionStatus = false;
 
@@ -216,16 +213,15 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
 
 //************************.fileCopyFrameOutputName.*****************************
 // Purpose : To form the final output file name.
-// Inputs  : ppcOutputFile - Pointer to the output file name.
-//           pcExtension - Pointer to the original extension.
+// Inputs  : pcExtension - Pointer to the original extension.
 //           ppcInputFileName - Pointer to the file name to be modified.
-// Outputs : Pointer ppcOutputFile is updated to the modified file name.
+// Outputs : ppcOutputFile - Pointer is updated to the modified file name.
 // Return  : blFunctionStatus - True if name is successfully modified, 
 //           else returns false.
 // Notes   : None
 //******************************************************************************
-bool fileCopyFrameOutputName(char **ppcOutputFile,
-                             char *pcExtension, char **ppcInputFileName)
+bool fileCopyFrameOutputName(char **ppcOutputFile, char *pcExtension, 
+                             char **ppcInputFileName)
 {
     bool blFunctionStatus = false;
     uint32 ulNameLength = 0;
@@ -273,7 +269,6 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
 //************************.fileCopyPerformFileCopy.*****************************
 // Purpose : To copy the file contents and close the files.
 // Inputs  : pstFilePointer - Pointer to the input file.
-//           ppstOutputFilePointer - Double pointer to the output file.
 //           pcOutputFileName - Pointer to the output file name.
 //           pulFileSize - Pointer to the size of the file.
 // Outputs : None
@@ -281,21 +276,22 @@ bool fileCopyFrameOutputName(char **ppcOutputFile,
 //           else returns false.
 // Notes   : None
 //******************************************************************************
-bool fileCopyPerformFileCopy(FILE *pstFilePointer, FILE **ppstOutputFilePointer,
-                             char *pcOutputFileName, uint32 *pulFileSize)
+bool fileCopyPerformFileCopy(FILE *pstFilePointer,char *pcOutputFileName, 
+                             uint32 pulFileSize)
 {
+    FILE *pstOutputFilePointer = NULL;
     bool blFunctionStatus = false;
-    if ((NULL != pulFileSize) && (NULL != pstFilePointer) && 
-        (NULL != pcOutputFileName))
+
+    if ((NULL != pstFilePointer) && (NULL != pcOutputFileName))
     {
-        if (true == fileOperationOpen(ppstOutputFilePointer,
+        if (true == fileOperationOpen(&pstOutputFilePointer,
                                       pcOutputFileName, WRITE_MODE))
         {
             if (true == fileOperationCopy(pulFileSize, pstFilePointer,
-                                          *ppstOutputFilePointer))
+                                          pstOutputFilePointer))
             {
                 if ((true == fileOperationClose(pstFilePointer)) &&
-                    (true == fileOperationClose(*ppstOutputFilePointer)))
+                    (true == fileOperationClose(pstOutputFilePointer)))
                 {
                     blFunctionStatus = true;
                 }

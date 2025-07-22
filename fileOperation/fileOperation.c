@@ -27,10 +27,9 @@
 
 //****************************.fileOperationOpen.*******************************
 // Purpose : To open the file in read or write mode.
-// Inputs  : pstFile - Pointer to the file.
-//           pcFileName - file name.
+// Inputs  : pcFileName - file name.
 //           pstMode - mode to open the file.
-// Outputs : File pointer pstFile updated to point the opened file.
+// Outputs : pstFile - File pointer updated to point the opened file.
 // Return  : blFunctionStatus - True if file opened succesfully, else false.
 // Notes   : None.
 //******************************************************************************
@@ -90,8 +89,7 @@ bool fileOperationClose(FILE *pstFile)
 //***************************.fileOperationSize.********************************
 // Purpose : To find out the size of input file.
 // Inputs  : pstFile - File pointer.
-//           pulFileSize - Pointer to size variable.
-// Outputs : None.
+// Outputs : pulFileSize - Pointer to size variable updated with size.
 // Return  : blFunctionStatus - True if size variable updated, else false.
 // Notes   : None.
 //******************************************************************************
@@ -117,23 +115,23 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 //****************************.fileOperationCopy.*******************************
 // Purpose : To copy contents from source file to destination file.
 // Inputs  : pstFile - Source file pointer.
-//           pstOutputFile - destination file pointer.
-//           pulFileSize - size fo file.
+//           pstOutputFile - Destination file pointer.
+//           pulFileSize - size of the file.
 // Outputs : None.
 // Return  : blFunctionStatus - True if file contents copied successfully, 
 //           else false.
 // Notes   : None.
 //******************************************************************************
-bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
+bool fileOperationCopy(uint32 pulFileSize, FILE *pstFile, FILE *pstOutputFile)
 {
     bool blFunctionStatus = false;
     void *pFileStorage = NULL;
     uint32 ulFileCharacterCount = 0;
     uint32 ulTotalCopyCount = 0;
 
-    if ((NULL != pulFileSize) && (NULL != pstFile) && (NULL != pstOutputFile))
+    if ((NULL != pstFile) && (NULL != pstOutputFile))
     {
-        pFileStorage = malloc(*pulFileSize);
+        pFileStorage = malloc(pulFileSize);
 
         if (pFileStorage != NULL)
         {
@@ -145,7 +143,7 @@ bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstOutputFile)
                 ulTotalCopyCount += ulFileCharacterCount;
             }
 
-            if (*pulFileSize == ulTotalCopyCount)
+            if (pulFileSize == ulTotalCopyCount)
             {
                 blFunctionStatus = true;
             }

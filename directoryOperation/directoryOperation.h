@@ -1,36 +1,33 @@
-//**************************** FileCopyApp *************************************
+//****************************** directoryOperation ****************************
 // Copyright (c) 2025 Trenser Technology Solutions
-// All Rights Reserved 
+// All Rights Reserved
 //******************************************************************************
-// Summary : Contains all type definitions and global constants required
-//           in every file in the current project.
-// Note    : None
+// Summary : Contains all forward declarations required for directory operations 
+//           inside listFiles.c file.
+// Note    : None.
 //******************************************************************************
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef _DIRECTORY_OPERATION_H
+#define _DIRECTORY_OPERATION_H
 
 //******************************* Include Files ********************************
+#include <stdio.h>
+#include <stdbool.h>
+#include "../common.h"
 
 //******************************* Global Types *********************************
-typedef unsigned char uint8;
-typedef signed char int8;
-typedef unsigned long uint32;
-typedef signed long int32;
-typedef unsigned short uint16;
 
 //***************************** Global Constants *******************************
-#define INPUT_ARGUMENTS (2)
-#define FIRST_ARGUMENT  (1)
-#define MAXIMUM_NAME_LENGTH (30)
-#define MAXIMUM_EXTENSION_LENGTH (10)
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
+bool directoryOperationOpen(DIR **pstDirectory, char **pcPath,
+                            struct dirent **pstContents);
+bool directoryOperationClose(DIR **pstDirectory);
 
 //*********************** Inline Method Implementations ************************
 
 //******************************************************************************
 
-#endif // _COMMON_H
-// EOF 
+#endif // _DIRECTORY_OPERATION_H
+// EOF

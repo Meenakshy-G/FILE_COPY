@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include "common.h"
 #include "fileOperation.h"
-#include "fileCopy.h"
+#include "listFiles.h"
 
 //******************************* Local Types **********************************
 
@@ -26,36 +26,32 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose : To get the input file from user and forward it to fileCopy.c file 
-//           to generate the copy of file.
-// Inputs  : The command line argument, input file name or path, that is 
-//           pointed by pcFileName.
-// Outputs : The copy of the file is created.
+// Purpose : To get the input directory path from command line argument and 
+//           forward it to listFiles.c file to generate the list of files in it. 
+// Inputs  : The command line argument of directory path pointed by
+//           pcDirectoryPath.
+// Outputs : None.
 // Return  : Zero.
-// Notes   : None
+// Notes   : None.
 //******************************************************************************
 int main(int argc, char *argv[])
 {
-    char *pcFileName = NULL;
+    char *pcDirectoryPath = NULL;
 
     if (INPUT_ARGUMENTS == argc)
     {
-        pcFileName = (char *)argv[FIRST_ARGUMENT];
+        pcDirectoryPath = (char *)argv[FIRST_ARGUMENT];
 
-        if (NULL != pcFileName)
+        if (NULL != pcDirectoryPath)
         {
-            if (true == fileCopyTool(pcFileName))
+            if (true == listFilesCheckDirectory(pcDirectoryPath))
             {
-                printf("File Copy Created Successfully\n");
-            }
-            else
-            {
-                printf("Cannot Create File copy\n");
+                printf("Files listed succesfully\n");
             }
         }
         else
         {
-            printf("Cannot obtain input file argument\n");
+            printf("Cannot obtain input path argument\n");
         }
     }
     else

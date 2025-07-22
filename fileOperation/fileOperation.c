@@ -51,7 +51,7 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
     }
     else
     {
-        printf("Input pointer is NULL");
+        printf("Input pointer is NULL\n");
     }
 
     return blFunctionStatus;
@@ -108,7 +108,57 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
     }
     else
     {
-        printf("Input pointer are NULL");
+        printf("Input pointers are NULL\n");
+    }
+
+    return blFunctionStatus;
+}
+
+//**********************.fileOperationFindExtension.****************************
+// Purpose : To find out the extension of input file.
+// Inputs  : pcFileName - Pointer to input file name.
+//           ppcExtension - Double pointer to the extension.
+//           pblExtensionStatus - Pointer to the status of file extension.
+// Outputs : The pointer to extension pstExtension updated with the 
+//           extension of current file.
+//           pblExtensionStatus - Pointer updated and value is set true if no 
+//           extension to current file 
+// Return  : blFunctionStatus - True if extension found out  successfully, 
+//           else false.
+// Notes   : None.
+//******************************************************************************
+bool fileOperationFindExtension(char *pcFileName, char **ppcExtension,
+                                bool *pblExtensionStatus)
+{
+    bool blFunctionStatus = false;
+    // printf("inhere: THe FIleNAME is : %s\n", pcFileName);
+    char *cExtension = NULL;
+
+    if ((NULL != pcFileName) && (NULL != ppcExtension ))
+    {
+        cExtension = strchr(pcFileName, EXTENSION_SEPARATION);
+
+        if (cExtension != NULL)
+        {
+            cExtension ++;
+            *ppcExtension = cExtension;
+
+            if (NULL != pblExtensionStatus)
+            {
+                *pblExtensionStatus = true;
+            }
+    
+            blFunctionStatus = true;
+        }
+        else
+        {
+            *pblExtensionStatus = false;
+            blFunctionStatus = true;
+        }
+    }
+    else
+    {
+        printf("Cannot Find Extension: Input pointers is NULL\n");
     }
 
     return blFunctionStatus;

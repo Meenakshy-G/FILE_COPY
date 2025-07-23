@@ -17,7 +17,6 @@
 //******************************* Global Types *********************************
 
 //***************************** Global Constants *******************************
-#define SIZE (1)
 #define EXTENSION_SEPARATION ('.')
 #define READ ("rb")
 #define WRITE ("wb")
@@ -26,7 +25,6 @@
 
 //**************************** Forward Declarations ****************************
 bool fileOperationOpen(FILE **pstFile, char *pstFileName, char *pstMode);
-bool fileOperationCopy(uint32 *pulFileSize, FILE *pstFile, FILE *pstCopyFile);
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize);
 bool fileOperationClose(FILE *pstFile);
 bool fileOperationFindExtension(char *pcFileName, char **ppcExtension,

@@ -3,7 +3,7 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : directoryOperation.c
-// Summary : All the directory operation functions are defined.
+// Summary : Contains functions that perform the directory operations.
 // Note    : Header file included.
 // Author  : Meenakshy G
 // Date    : 18/JULY/2025
@@ -28,11 +28,10 @@
 //****************************** Local Functions *******************************
 
 //****************************.directoryOperationOpen.**************************
-// Purpose : To open the input directory.
-// Inputs  : ppcPath - Path to directory or directory name.
-// Outputs : ppstDirectory - Pointer to the directory.
-// Return  : blFunctionStatus - True if directory opened successfully,
-//           else false.
+// Purpose : Open the given directory.
+// Inputs  : ppcPath - directory path pointer.
+// Outputs : ppstDirectory - directory pointer.
+// Return  : True if directory opened successfully, else false.
 // Notes   : None.
 //******************************************************************************
 bool directoryOperationOpen(DIR **ppstDirectory, char **ppcPath)
@@ -57,11 +56,10 @@ bool directoryOperationOpen(DIR **ppstDirectory, char **ppcPath)
 }
 
 //*************************.directoryOperationClose.****************************
-// Purpose : To close the input directory.
-// Inputs  : pstDirectory - Pointer to the directory.
+// Purpose : Close the given directory.
+// Inputs  : ppstDirectory - directory pointer.
 // Outputs : None.
-// Return  : blFunctionStatus - True if directory closed successfully,
-//           else false.
+// Return  : True if directory closed successfully, else false.
 // Notes   : None.
 //******************************************************************************
 bool directoryOperationClose(DIR **ppstDirectory)

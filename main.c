@@ -3,7 +3,7 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : main.c
-// Summary : Contains program to list all the files in a given directory.
+// Summary : Contains program to list all files in a given directory.
 // Note    : Header files are included.
 // Author  : Meenakshy G
 // Date    : 18/JULY/2025
@@ -27,9 +27,9 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose : To get the input directory path from command line argument.
-// Inputs  : The command line argument of directory path pointed by
-//           pcDirectoryPath.
+// Purpose : List all files inside the given directory path.
+// Inputs  : argc - Input argument count.
+//           argv[] - Input directory path.
 // Outputs : None.
 // Return  : Zero.
 // Notes   : None.

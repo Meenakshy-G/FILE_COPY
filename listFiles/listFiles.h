@@ -2,8 +2,8 @@
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
-// Summary : Contains all global constants and forward declarations required for
-//           listFiles.c file functions.
+// Summary : Contains type defenitions,  global constants and 
+//           forward declarations.
 // Note    : None.
 //******************************************************************************
 #ifndef _LIST_FILES_H
@@ -37,4 +37,4 @@ bool listFilesCheckDirectory(char *pcDirectoryPath);
 //******************************************************************************
 
 #endif // _LIST_FILES_H
-       // EOF
+// EOF

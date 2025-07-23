@@ -1,33 +1,35 @@
-//**************************** FileCopyApp *************************************
+//**************************** FileCopy ****************************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved 
 //******************************************************************************
-// Summary : Contains all type definitions and global constants.
+// Summary : Contains global constants and forward declarations.
 // Note    : None
 //******************************************************************************
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef _FILE_COPY_H
+#define _FILE_COPY_H
 
 //******************************* Include Files ********************************
+#include <stdio.h>
+#include <stdbool.h>
+#include "../common.h"
 
 //******************************* Global Types *********************************
-typedef unsigned char uint8;
-typedef signed char int8;
-typedef unsigned long uint32;
-typedef signed long int32;
-typedef unsigned short uint16;
 
 //***************************** Global Constants *******************************
-#define INPUT_ARGUMENTS (2)
-#define FIRST_ARGUMENT  (1)
+#define FOLDER_SEPARATION ('/')
+#define EXTENSION_SEPARATION ('.')
+#define MODIFIER ("_copy")
+#define READ_MODE ("rb")
+#define WRITE_MODE ("wb")
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
+bool fileCopyTool(char *pcFileName);
 
 //*********************** Inline Method Implementations ************************
 
 //******************************************************************************
 
-#endif // _COMMON_H
+#endif // _FILE_COPY_H 
 // EOF 

@@ -1,17 +1,21 @@
-//**************************** FileCopy ****************************************
+//**************************** FileCopyApp *************************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
 // File    : main.c
 // Summary : Contains program to generate duplicate of a given file.
-// Note    : 
+// Note    : Header files are included.
 // Author  : Meenakshy G
 // Date    : 11/JULY/2025
 //******************************************************************************
 //******************************* Include Files ********************************
 #include <stdio.h>
 #include <string.h>
+#include <libgen.h>
+#include <stdlib.h>
 #include "common.h"
+#include "fileOperation.h"
+#include "fileCopy.h"
 
 //******************************* Local Types **********************************
 
@@ -22,57 +26,43 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose :  
-// Inputs  : 
-// Outputs : 
-// Return  : None
+// Purpose : Generate copy of file from given file path. 
+// Inputs  : argc - Input arguments count.
+//           argv[] - Input file path.
+// Outputs : None.
+// Return  : Zero.
 // Notes   : None
 //******************************************************************************
-int main(uint16 argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    FILE *pstFilePointer            = NULL;
-    FILE *pstDestinationFilePointer = NULL;
-    uint8 *pucInputFileName         = NULL;
-    uint8 *pucOutputFileName        = NULL;
-    uint8 appendName[5]             = "copy";
-    int32 ulEachCharacter           = 0;
-    uint32 ulCharacterCount         = 0;
-    uint32 ulCounter                = 0;
-    uint8 ucExtensionStart          = '.';
-    uint8 ucExtensionPosition;
+    char *pcFileName = NULL;
 
-    if(argc < 2)
+    if (INPUT_ARGUMENTS == argc)
     {
-        printf("File not given");
-    }
-    pucInputFileName = (uint8*)argv[1];
-    pstFilePointer = fopen(pucInputFileName, "r+");
+        pcFileName = (char *)argv[FIRST_ARGUMENT];
 
-    if(pstFilePointer == NULL)
-    {
-        printf("Error opening the file");
-        fclose(pstFilePointer);
+        if (NULL != pcFileName)
+        {
+            if (true == fileCopyTool(pcFileName))
+            {
+                printf("File Copy Created Successfully\n");
+            }
+            else
+            {
+                printf("Cannot Create File copy\n");
+            }
+        }
+        else
+        {
+            printf("Cannot obtain input file argument\n");
+        }
     }
-    pucOutputFileName = strcat(appendName,pucInputFileName);
-    // pucOutputFileName = strcat(pucInputFileName,"_copy");
-    pstDestinationFilePointer = fopen(pucOutputFileName,"w+");
-
-    if(pstDestinationFilePointer == NULL)
+    else
     {
-        printf("Error opening the file");
-        fclose(pstDestinationFilePointer);
+        printf("No Command Line Arguments Given\n");
     }
-
-    while((ulEachCharacter = fgetc(pstFilePointer)) != EOF)
-    {
-        ulCharacterCount ++;
-        fputc(ulEachCharacter, pstDestinationFilePointer);
-        fseek(pstDestinationFilePointer,0,SEEK_CUR);
-    }
-    fclose(pstFilePointer);
-    fclose(pstDestinationFilePointer);
-    printf("%ld",ulCharacterCount);
 
     return 0;
 }
+//******************************************************************************
 // EOF

@@ -3,7 +3,7 @@ CC = gcc
 CROSS_CC = aarch64-linux-gnu-gcc
 
 # Source files
-SRC = $(wildcard *.c fileCopy/*.c fileOperation/*.c)
+SRC = $(wildcard *.c listFiles/*.c fileOperation/*.c directoryOperation/*.c)
 FILE_NAMES = $(notdir $(SRC))
 
 # Output folders
@@ -15,13 +15,13 @@ DEBUG   = $(patsubst %.c,debug/%.o,$(FILE_NAMES))
 ASSEMBLY = $(patsubst %.c,release/%.s,$(FILE_NAMES))
 
 # Options
-CFLAGS = -Wall -IfileCopy -IfileOperation
+CFLAGS = -Wall -IlistFiles -IfileOperation -IdirectoryOperation
 DEBUG_OPTIONS = -g -c -O0
-VPATH = .:fileCopy:fileOperation
+VPATH = .:listFiles:fileOperation:directoryOperation
 
 # Default target
-all : create_folder linux rpi
-	$(CC) $(CFLAGS) $(OBJECT) -o FILECOPYTOOL
+all : create_folder linux  #rpi
+	$(CC) $(CFLAGS) $(OBJECT) -o FILE_LIST_TOOL
 
 # Create output folders
 create_folder :
@@ -45,13 +45,13 @@ debug/%.o : %.c
 	$(CC) $(DEBUG_OPTIONS) $(CFLAGS) $< -o $@
 
 # Cross compilation for Raspberry Pi
-rpi : create_folder $(SRC)
-	$(CROSS_CC) $(CFLAGS) $(SRC) -o release/FILECOPYTOOL_for_rpi
+# rpi : create_folder $(SRC)
+# 	$(CROSS_CC) $(CFLAGS) $(SRC) -o release/FILE_LIST_TOOL_for rpi
 
 # Debug executable
 debug : debug_files
-	$(CC) debug/* -o debug/FILECOPYTOOL_DEBUG
+	$(CC) debug/* -o debug/FILE_LIST_TOOL_DEBUG
 
 # Clean
 clean :
-	rm -rf $(FOLDERS) FILECOPYTOOL
+	rm -rf $(FOLDERS) FILE_LIST_TOOL

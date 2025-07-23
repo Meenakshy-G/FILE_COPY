@@ -1,20 +1,19 @@
-## **FILE_COPY**
+## **List Files**
 
-Project to create the copy of a given input file. The copy of the file is 
-created within the same folder, renamed into 'file'_copy.'extension'. 
-Input can be any file within source directory or path to the file. 
+Project to list all the files in a given directory, if provided with the path 
+to the directory, using linked list.
+The list contains the name of the file , file type and file size.
 
 **Features**
 
 * source code organised in multiple directories.
-* separate native and cross-compile builds.
 * makefile and cmake files given.
 
 ## Building with make 
 
 $ make all
 
-Output: FILECOPYTOOL
+Output: FILE_LIST_TOOL
 
 $ make clean 
 
@@ -32,10 +31,10 @@ Output: All the object files with debug information created in the debug folder.
 
 $ cmake -S. -B Build && cmake --build Build
 
-Ouput : FILECOPYTOOL 
+Ouput : FILE_LIST_TOOL \
         generated within current source directory and all other 
         remaining release and debug folders created inside Build directory.
 
 ## To Run Executable
 
-$ ./FILECOPYTOOL "filename or path"
+$ ./FILE_LIST_TOOL "path to directory"

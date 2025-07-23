@@ -3,7 +3,7 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : listFiles.c
-// Summary :
+// Summary : Contains the program to link and list all the files in a directory.
 // Note    : Header file included.
 // Author  : Meenakshy G
 // Date    : 18/JULY/2025
@@ -27,26 +27,29 @@
 //***************************** Local Variables ********************************
 
 //****************************** Local Functions *******************************
-bool listFilesCreatePath(char *pcFileName, char *pcPath, char **pcFullPath);
-bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 *pulSize, 
-                         FILE_DETAILS **pstNode);
-bool listFilesAccessEach(struct dirent *pstDirectoryContents, 
-                         char *pcDirectoryPath);
-bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 *pulSize, 
-                         FILE_DETAILS **ppstHeadNode);
+bool listFilesCreatePath(char *pcFileName, char *pcPath, char **ppcFullPath);
+bool listFilesAccessEach(struct dirent *pstDirectoryContents,
+                         char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode);
+bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+                       FILE_DETAILS **ppstHeadNode);
+bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+                         FILE_DETAILS **ppstNode);
+bool listFilesPrint(FILE_DETAILS **ppstHeadNode);
+bool listFilesFreeLink(FILE_DETAILS **ppstHeadNode);
 
 //****************************.listFilesCheckDirectory.*************************
-// Purpose :
-// Inputs  :
-// Outputs :
-// Return  :
+// Purpose : To open the directory and checkout the files inside and list them.
+// Inputs  : pcDirectoryPath - Pointer to the path of directory.
+// Outputs : None.
+// Return  : True if directory opened successfully and files listed else, false.
 // Notes   : None.
 //******************************************************************************
 bool listFilesCheckDirectory(char *pcDirectoryPath)
 {
     bool blFunctionStatus = false;
     DIR *pstDirectoryPointer = NULL;
-    struct dirent *pstDirectoryContents;
+    struct dirent *pstDirectoryContents = NULL;
+    FILE_DETAILS *pstHeadNode = NULL;
 
     do
     {
@@ -57,10 +60,9 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
         }
 
         if (false == directoryOperationOpen(&pstDirectoryPointer,
-                                            &pcDirectoryPath,
-                                            &pstDirectoryContents))
+                                            &pcDirectoryPath))
         {
-            printf("Cannot list files\n");
+            printf("Cannot Open Directory\n");
             break;
         }
 
@@ -70,14 +72,22 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
             break;
         }
 
-        // make this things into another function.
         while (NULL != (pstDirectoryContents = readdir(pstDirectoryPointer)))
         {
             if (FILE_TYPE == (pstDirectoryContents)->d_type)
             {
-                listFilesAccessEach(pstDirectoryContents, pcDirectoryPath);
+                listFilesAccessEach(pstDirectoryContents, pcDirectoryPath, 
+                                    &pstHeadNode);
             }
         }
+
+        if (false == listFilesPrint(&pstHeadNode))
+        {
+            printf("Cannot print the list");
+            break;
+        }
+
+        
 
         // after the while loop ends, all files arre linked then jus print the link.
 
@@ -85,6 +95,102 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
 
     } while (blFunctionStatus == false);
 
+    return blFunctionStatus;
+}
+
+//*************************.listFilesAccessEach.********************************
+// Purpose : Perform the functions necessary to access each files.
+// Inputs  : pstDirectoryContents - pointer to dirent struct for the file
+//           pcDirectoryPath - directory path string
+// Outputs : None
+// Return  : True if successfully accessed each file, else false
+// Notes   : None.
+//******************************************************************************
+bool listFilesAccessEach(struct dirent *pstDirectoryContents,
+                         char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode)
+{
+    FILE *pstFilePointer = NULL;
+    uint32 ulFileSize = 0;
+    char *pcFullPath = NULL;
+    int8 *pcNameOfFile = NULL;
+    int8 *pcFileName = NULL;
+    int8 *pcExtension = NULL;
+    bool blExtensionStatus = false;
+    bool blFunctionStatus = false;
+    bool blFullPathExist = false;
+
+    if ((NULL != pstDirectoryContents) && (NULL != pcDirectoryPath) &&
+        (NULL != ppstHeadNode))
+    {
+        do
+        {
+            pcFileName = (int8 *)pstDirectoryContents->d_name;
+
+            if (NULL == pcFileName)
+            {
+                printf("Invalid file name \n");
+                break;
+            }
+
+            if (false == listFilesCreatePath((char *)pcFileName,
+                                             pcDirectoryPath, &pcFullPath))
+            {
+                printf("Cannot create full path for file: %s\n", pcFileName);
+                break;
+            }
+
+            blFullPathExist = true;
+
+            if (false == fileOperationOpen(&pstFilePointer, pcFullPath, READ))
+            {
+                printf("Cannot open file: %s\n", pcFullPath);
+                break;
+            }
+
+            if (false == fileOperationSize(pstFilePointer, &ulFileSize))
+            {
+                printf("Cannot get size for file: %s\n", pcFullPath);
+                fileOperationClose(pstFilePointer);
+                break;
+            }
+
+            pcNameOfFile = (int8 *)pstDirectoryContents->d_name;
+
+            if (NULL == pcNameOfFile)
+            {
+                printf("Invalid file name in directory entry\n");
+                break;
+            }
+
+            if (false == fileOperationFindExtension((char *)pcNameOfFile,
+                                                    (char **)&pcExtension,
+                                                    &blExtensionStatus))
+            {
+                printf("Cannot find extension for file: %s\n", pcNameOfFile);
+            }
+
+            if (false == blExtensionStatus)
+            {
+                pcExtension = (int8 *)"No Extension";
+            }
+
+            if (false == listFilesLinkNode(pcNameOfFile, pcExtension, 
+                                           ulFileSize, ppstHeadNode))
+            {
+                printf("Cannot link the nodes\n");
+                break;
+            }
+
+            blFunctionStatus = true;
+
+        } while (blFunctionStatus == false);
+
+        if (true == blFullPathExist)
+        {
+            free(pcFullPath);
+            pcFullPath = NULL; 
+        }
+    }
 
     return blFunctionStatus;
 }
@@ -107,7 +213,7 @@ bool listFilesCreatePath(char *pcFileName, char *pcPath, char **pcFullPath)
 
     if ((NULL != pcFileName) && (NULL != pcPath))
     {
-        ulPathLength = strlen(pcFileName) + strlen(FILE_SEPARATOR) + 
+        ulPathLength = strlen(pcFileName) + strlen(FILE_SEPARATOR) +
                        strlen(pcPath) + 1;
         *pcFullPath = (char *)malloc(ulPathLength);
 
@@ -123,96 +229,45 @@ bool listFilesCreatePath(char *pcFileName, char *pcPath, char **pcFullPath)
     return blFunctionStatus;
 }
 
-//*************************.listFilesAccessEach.********************************
-// Purpose : Perform the functions necessary to access each files.
-// Inputs  : pstDirectoryContents - pointer to dirent struct for the file
-//           pcDirectoryPath - directory path string
+//*************************.listFilesLinkNode.**********************************
+// Purpose : Create new nodes and link them accordingly.
+// Inputs  : pcName - Pointer to the name of file.
+//           pcExtension - Pointer to the file extension.
+//           pulSize - Pointer to the size of the file.
+//           ppstHeadNode - pointer to the head node of the linked list.
 // Outputs : None
-// Return  : True if successfully accessed each file, else false
+// Return  : True if successfully created link, else false.
 // Notes   : None.
 //******************************************************************************
-bool listFilesAccessEach(struct dirent *pstDirectoryContents, 
-                         char *pcDirectoryPath)
+bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+                       FILE_DETAILS **ppstHeadNode)
 {
-    FILE *pstFilePointer = NULL;
-    uint32 ulFileSize = 0;
-    char *pcFullPath = NULL;
-    int8 *pcNameOfFile = NULL;
-    int8 *pcFileName = NULL;
-    char *pcExtension = NULL;
-    bool blExtensionStatus = false;
     bool blFunctionStatus = false;
-    FILE_DETAILS *pstHeadNode = NULL;
+    FILE_DETAILS *pstNewNode = NULL;
+    FILE_DETAILS *pstCurrentNode = NULL;
 
-    if ((NULL != pstDirectoryContents) && (NULL != pcDirectoryPath))
+    if ((NULL != pcName) && (NULL != pcExtension) && (NULL != ppstHeadNode))
     {
-        do
+        listFilesCreateNode(pcName, pcExtension, pulSize, &pstNewNode);
+
+        if (*ppstHeadNode == NULL)
         {
-            pcFileName = (int8 *)pstDirectoryContents->d_name;
+            *ppstHeadNode = pstNewNode;
+        }
+        else
+        {
+            pstCurrentNode = *ppstHeadNode;
 
-            if (NULL == pcFileName)
+            while (NULL != pstCurrentNode->pstNext)
             {
-                printf("Invalid file name \n");
-                break;
+                pstCurrentNode = pstCurrentNode->pstNext;
             }
 
-            if (false == listFilesCreatePath((char *)pcFileName,
-                                             pcDirectoryPath, &pcFullPath))
-            {
-                printf("Cannot create full path for file: %s\n", pcFileName);
-                break;
-            }
+            pstCurrentNode->pstNext = pstNewNode;
 
-            if (false == fileOperationOpen(&pstFilePointer, pcFullPath, READ))
-            {
-                printf("Cannot open file: %s\n", pcFullPath);
-                free(pcFullPath);
-                break;
-            }
+        }
 
-            if (false == fileOperationSize(pstFilePointer, &ulFileSize))
-            {
-                printf("Cannot get size for file: %s\n", pcFullPath);
-                fileOperationClose(pstFilePointer);
-                free(pcFullPath);
-                break;
-            }
-
-            pcNameOfFile = (int8 *)pstDirectoryContents->d_name;
-
-            if (NULL == pcNameOfFile)
-            {
-                printf("Invalid file name in directory entry\n");
-                break;
-            }
-
-            if (false == fileOperationFindExtension((char *)pcNameOfFile,
-                                                    &pcExtension,
-                                                    &blExtensionStatus))
-            {
-                printf("Cannot find extension for file: %s\n", pcNameOfFile);
-            }
-
-            if (false == blExtensionStatus)
-            {
-                pcExtension = (char *)"No Extension";
-            }
-
-            listFilesLinkNode(pcNameOfFile, (int8 *)pcExtension, &ulFileSize, &pstHeadNode); 
-                         
-
-            // if (false == listFilesCreateNode(pcNameOfFile,
-            //                                  (int8 *)pcExtension,
-            //                                  &ulFileSize, &pstHeadNode))
-            // {
-            //     printf("Cannot create node for file: %s\n", pcNameOfFile);
-            //     fileOperationClose(pstFilePointer);
-            //     break;
-            // }
-
-            blFunctionStatus = true;
-
-        } while (blFunctionStatus == false);
+        blFunctionStatus = true;
     }
 
     return blFunctionStatus;
@@ -228,13 +283,12 @@ bool listFilesAccessEach(struct dirent *pstDirectoryContents,
 // Return  : True if successfully accessed each file, else false
 // Notes   : None.
 //******************************************************************************
-bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 *pulSize, 
+bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
                          FILE_DETAILS **ppstNewNode)
 {
     bool blFunctionStatus = false;
 
-    if ((NULL != pcName) && (NULL != pcExtension) && (NULL != pulSize) && 
-        (NULL != ppstNewNode))
+    if ((NULL != pcName) && (NULL != pcExtension) && (NULL != ppstNewNode))
     {
         *ppstNewNode = (FILE_DETAILS *)malloc(sizeof(FILE_DETAILS));
 
@@ -254,7 +308,7 @@ bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 *pulSize,
                 strcpy((char *)(*ppstNewNode)->ucFileType, (char *)pcExtension);
             }
 
-            (*ppstNewNode)->ulFileSize = *pulSize;
+            (*ppstNewNode)->ulFileSize = pulSize;
             (*ppstNewNode)->pstNext = NULL;
 
             blFunctionStatus = true;
@@ -268,39 +322,72 @@ bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 *pulSize,
     return blFunctionStatus;
 }
 
-
-bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 *pulSize, 
-                         FILE_DETAILS **ppstHeadNode)
+//*************************.listFilesPrint.*************************************
+// Purpose : To print the linked list.
+// Inputs  : None.
+// Outputs : None.
+// Return  : True if successfully printed the linked list, else false.
+// Notes   : None.
+//******************************************************************************
+bool listFilesPrint(FILE_DETAILS **ppstHeadNode)
 {
     bool blFunctionStatus = false;
-    FILE_DETAILS *pstNewNode = NULL;
     FILE_DETAILS *pstCurrentNode = NULL;
 
-    if ((NULL != pcName) && (NULL != pcExtension) && (NULL != pulSize) && 
-        (NULL != ppstHeadNode))
+    if (NULL != ppstHeadNode)
     {
-        listFilesCreateNode(pcName, pcExtension, pulSize, &pstNewNode); 
+        pstCurrentNode = *ppstHeadNode;
 
-        if (*ppstHeadNode == NULL)
+        if (NULL != pstCurrentNode)
         {
-            *ppstHeadNode = pstNewNode;
-        }
-        else
-        {
-            pstCurrentNode = *ppstHeadNode;
-
-            while (NULL != pstCurrentNode->pstNext)
+            while (pstCurrentNode != NULL)
             {
+                printf("File Name: %s,         File Type: %s",
+                                                pstCurrentNode->ucFileName,
+                                                pstCurrentNode->ucFileType);
+                printf("           File Size: %lu bytes\n\n",
+                                                 pstCurrentNode->ulFileSize);
                 pstCurrentNode = pstCurrentNode->pstNext;
             }
+        }
 
-            pstCurrentNode->pstNext = pstNewNode;
+        if (true == listFilesFreeLink(ppstHeadNode))
+        {
+            blFunctionStatus = true;
+        }
+    }
+
+    return blFunctionStatus;
+}
+
+//*************************.listFilesFreeLink.**********************************
+// Purpose : To free the linked list.
+// Inputs  : ppstHeadNode - Double pointer to the head node.
+// Outputs : None.
+// Return  : True if successfully freed the the linked list, else false.
+// Notes   : None.
+//******************************************************************************
+bool listFilesFreeLink(FILE_DETAILS **ppstHeadNode)
+{
+    bool blFunctionStatus = false;
+    FILE_DETAILS *pstCurrentNode =  NULL;
+    FILE_DETAILS *pstNode = NULL;
+
+    if (NULL != ppstHeadNode)
+    {
+        pstNode = *ppstHeadNode;
+
+        while (NULL != pstNode)
+        {
+            pstCurrentNode = pstNode;
+            pstNode = pstNode->pstNext;
+            free(pstCurrentNode);
         }
 
         blFunctionStatus = true;
     }
 
-    return blFunctionStatus
+    return blFunctionStatus;
 }
 //******************************************************************************
 // EOF

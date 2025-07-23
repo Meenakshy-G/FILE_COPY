@@ -21,8 +21,6 @@ typedef unsigned short uint16;
 //***************************** Global Constants *******************************
 #define INPUT_ARGUMENTS (2)
 #define FIRST_ARGUMENT  (1)
-#define MAXIMUM_NAME_LENGTH (30)
-#define MAXIMUM_EXTENSION_LENGTH (10)
 
 //***************************** Global Variables *******************************
 

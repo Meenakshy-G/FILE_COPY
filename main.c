@@ -3,10 +3,10 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : main.c
-// Summary : Contains program to generate duplicate of a given file.
+// Summary : Contains program to list all the files in a given directory.
 // Note    : Header files are included.
 // Author  : Meenakshy G
-// Date    : 11/JULY/2025
+// Date    : 18/JULY/2025
 //******************************************************************************
 //******************************* Include Files ********************************
 #include <stdio.h>
@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "common.h"
 #include "fileOperation.h"
+#include "directoryOperation.h"
 #include "listFiles.h"
 
 //******************************* Local Types **********************************
@@ -26,8 +27,7 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose : To get the input directory path from command line argument and 
-//           forward it to listFiles.c file to generate the list of files in it. 
+// Purpose : To get the input directory path from command line argument.
 // Inputs  : The command line argument of directory path pointed by
 //           pcDirectoryPath.
 // Outputs : None.
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("No Command Line Arguments Given\n");
+        printf("No Proper Command Line Arguments Given\n");
     }
 
     return 0;

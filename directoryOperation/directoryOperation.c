@@ -29,30 +29,27 @@
 
 //****************************.directoryOperationOpen.**************************
 // Purpose : To open the input directory.
-// Inputs  : pstDirectory - Pointer to the directory.
-//           pcPath - Path to directory or directory name.
-//           pstContents - Pointer to the contents of directory.
-// Outputs : pstContents - Pointer to contents of directory getting modified.
+// Inputs  : ppcPath - Path to directory or directory name.
+// Outputs : ppstDirectory - Pointer to the directory.
 // Return  : blFunctionStatus - True if directory opened successfully,
 //           else false.
 // Notes   : None.
 //******************************************************************************
-bool directoryOperationOpen(DIR **pstDirectory, char **pcPath,
-                            struct dirent **pstContents)
+bool directoryOperationOpen(DIR **ppstDirectory, char **ppcPath)
 {
     bool blFunctionStatus = false;
 
-    if ((NULL != pstDirectory) && (NULL != *pcPath) && (NULL != pstContents))
+    if ((NULL != ppstDirectory) && (NULL != *ppcPath))
     {
-        *pstDirectory = opendir(*pcPath);
+        *ppstDirectory = opendir(*ppcPath);
 
-        if (NULL != *pstDirectory)
+        if (NULL != *ppstDirectory)
         {
             blFunctionStatus = true;
         }
         else
         {
-            printf("Directory cannot be opened\n");
+            printf("Directory cannot be opened: Not a directory \n");
         }
     }
 
@@ -67,13 +64,13 @@ bool directoryOperationOpen(DIR **pstDirectory, char **pcPath,
 //           else false.
 // Notes   : None.
 //******************************************************************************
-bool directoryOperationClose(DIR **pstDirectory)
+bool directoryOperationClose(DIR **ppstDirectory)
 {
     bool blFunctionStatus = false;
 
-    if (NULL != *pstDirectory)
+    if (NULL != *ppstDirectory)
     {
-        if (0 == closedir(*pstDirectory))
+        if (0 == closedir(*ppstDirectory))
         {
             blFunctionStatus = true;
         }

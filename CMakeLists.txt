@@ -13,25 +13,20 @@ BINARY_DIR ${CMAKE_BINARY_DIR}/Debug_folder
 CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug
 INSTALL_COMMAND ""
 )
-ExternalProject_Add(RELEASE_RPI
-SOURCE_DIR ${CMAKE_SOURCE_DIR}/cross_build
-BINARY_DIR ${CMAKE_BINARY_DIR}/Release_rpi_folder
-CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc 
-INSTALL_COMMAND ""
-)
-
 
 # The directories to look for header files are added.
 include_directories(${CMAKE_SOURCE_DIR}/fileOperation 
-                    ${CMAKE_SOURCE_DIR}/fileCopy)
+                    ${CMAKE_SOURCE_DIR}/directoryOperation 
+                    ${CMAKE_SOURCE_DIR}/listFiles)
 
 # The normal executable.
-add_executable(FILECOPYTOOL ${CMAKE_SOURCE_DIR}/main.c
-                            ${CMAKE_SOURCE_DIR}/fileOperation/fileOperation.c
-                            ${CMAKE_SOURCE_DIR}/fileCopy/fileCopy.c)
+add_executable(FILE_LIST_TOOL ${CMAKE_SOURCE_DIR}/main.c
+                    ${CMAKE_SOURCE_DIR}/fileOperation/fileOperation.c
+                    ${CMAKE_SOURCE_DIR}/directoryOperation/directoryOperation.c
+                    ${CMAKE_SOURCE_DIR}/listFiles/listFiles.c)
 
-set_target_properties(FILECOPYTOOL PROPERTIES RUNTIME_OUTPUT_DIRECTORY 
+set_target_properties(FILE_LIST_TOOL PROPERTIES RUNTIME_OUTPUT_DIRECTORY 
                        "${CMAKE_SOURCE_DIR}")
 
-target_compile_options(FILECOPYTOOL PRIVATE -fanalyzer)
+target_compile_options(FILE_LIST_TOOL PRIVATE -fanalyzer)
 

@@ -34,7 +34,7 @@ bool fileCopyPerformFileCopy(FILE *pstFilePointer,char *pcOutputFileName,
                              uint32 pulFileSize);
 
 //******************************.fileCopyTool.**********************************
-// Purpose : Generate copy file from input file path.
+// Purpose : Handle file operation functions to generate copy of a file.
 // Inputs  : pcFileName - pointer to the input file path.
 // Outputs : None.
 // Return  : True if copy file created successfully else false.

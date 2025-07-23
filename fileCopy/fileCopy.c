@@ -34,11 +34,10 @@ bool fileCopyPerformFileCopy(FILE *pstFilePointer,char *pcOutputFileName,
                              uint32 pulFileSize);
 
 //******************************.fileCopyTool.**********************************
-// Purpose : To copy contents from source file to destination file.
-// Inputs  : pcFileName - pointer to the input file name
+// Purpose : Generate copy file from input file path.
+// Inputs  : pcFileName - pointer to the input file path.
 // Outputs : None.
-// Return  : blFunctionStatus - True if copy of the file is created 
-//           successfully else false.
+// Return  : True if copy file created successfully else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyTool(char *pcFileName)
@@ -128,12 +127,10 @@ bool fileCopyTool(char *pcFileName)
 }
 
 //************************.fileCopyExtractNameFromPath.*************************
-// Purpose : To extract file name from path if path is given.
-// Inputs  : pcFileNameDuplicate - Pointer to the duplicate file name.
-// Outputs : pcInputFile pointer is updated to point file name only, by 
-//           removing path, if path given.
-// Return  : blFunctionStatus - True if path is successfully removed, 
-//           else returns false.
+// Purpose : Extract the file name from input file path.
+// Inputs  : pcFileNameDuplicate - file path pointer.
+// Outputs : pcInputFile - file name pointer.
+// Return  : True if file name extracted successfully, else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyExtractNameFromPath(char **pcInputFile, char *pcFileNameDuplicate)
@@ -163,12 +160,10 @@ bool fileCopyExtractNameFromPath(char **pcInputFile, char *pcFileNameDuplicate)
 }
 
 //************************.fileCopyModifyExtension.*****************************
-// Purpose : To add extension to the copy file name.
-// Inputs  : pcInputFileName - Pointer to the input file name.
-//           ppcOutputFileName - Double pointer to the duplicate file name.
-// Outputs : ppcOutputFileName is updated with modified output name.
-// Return  : blFunctionStatus - True if extension is successfully added, 
-//           else returns false.
+// Purpose : Modify name and extension of input file.
+// Inputs  : pcInputFileName - Input file name pointer.
+// Outputs : ppcOutputFileName - modified file name pointer.
+// Return  : True if file name modified successfully, else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
@@ -212,12 +207,11 @@ bool fileCopyModifyExtension(char *pcInputFileName, char **ppcOutputFileName)
 }
 
 //************************.fileCopyFrameOutputName.*****************************
-// Purpose : To form the final output file name.
-// Inputs  : pcExtension - Pointer to the original extension.
-//           ppcInputFileName - Pointer to the file name to be modified.
-// Outputs : ppcOutputFile - Pointer is updated to the modified file name.
-// Return  : blFunctionStatus - True if name is successfully modified, 
-//           else returns false.
+// Purpose : Add modifier and extension to output file name.
+// Inputs  : pcExtension - extension pointer.
+//           ppcInputFileName - file name pointer.
+// Outputs : ppcOutputFile - modified file name pointer.
+// Return  : True if name is successfully modified, else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyFrameOutputName(char **ppcOutputFile, char *pcExtension, 
@@ -267,17 +261,16 @@ bool fileCopyFrameOutputName(char **ppcOutputFile, char *pcExtension,
 }
 
 //************************.fileCopyPerformFileCopy.*****************************
-// Purpose : To copy the file contents and close the files.
-// Inputs  : pstFilePointer - Pointer to the input file.
-//           pcOutputFileName - Pointer to the output file name.
-//           pulFileSize - Pointer to the size of the file.
+// Purpose : Copy the contents from a file to new file.
+// Inputs  : pstFilePointer - file pointer
+//           pcOutputFileName - file name pointer.
+//           ulFileSize - file size.
 // Outputs : None
-// Return  : blFunctionStatus - True if copying is successfull, 
-//           else returns false.
+// Return  : True if successfully copied the file contents else false.
 // Notes   : None
 //******************************************************************************
 bool fileCopyPerformFileCopy(FILE *pstFilePointer,char *pcOutputFileName, 
-                             uint32 pulFileSize)
+                             uint32 ulFileSize)
 {
     FILE *pstOutputFilePointer = NULL;
     bool blFunctionStatus = false;
@@ -287,7 +280,7 @@ bool fileCopyPerformFileCopy(FILE *pstFilePointer,char *pcOutputFileName,
         if (true == fileOperationOpen(&pstOutputFilePointer,
                                       pcOutputFileName, WRITE_MODE))
         {
-            if (true == fileOperationCopy(pulFileSize, pstFilePointer,
+            if (true == fileOperationCopy(ulFileSize, pstFilePointer,
                                           pstOutputFilePointer))
             {
                 if ((true == fileOperationClose(pstFilePointer)) &&

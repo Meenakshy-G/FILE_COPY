@@ -26,11 +26,10 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose : To get the input file from user and forward it to fileCopy.c file 
-//           to generate the copy of file.
-// Inputs  : The command line argument, input file name or path, that is 
-//           pointed by pcFileName.
-// Outputs : The copy of the file is created.
+// Purpose : Generate copy of file from given file path. 
+// Inputs  : argc - Input arguments count.
+//           argv[] - Input file path.
+// Outputs : None.
 // Return  : Zero.
 // Notes   : None
 //******************************************************************************

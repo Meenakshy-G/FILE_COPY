@@ -3,7 +3,7 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : fileOperation.c
-// Summary : Contains the functions which does the operations on file.
+// Summary : Contains the functions for file operations.
 // Note    : Header file included.
 // Author  : Meenakshy G
 // Date    : 11/JULY/2025
@@ -26,11 +26,11 @@
 //****************************** Local Functions *******************************
 
 //****************************.fileOperationOpen.*******************************
-// Purpose : To open the file in read or write mode.
+// Purpose : Open the file in read or write mode.
 // Inputs  : pcFileName - file name.
 //           pstMode - mode to open the file.
-// Outputs : pstFile - File pointer updated to point the opened file.
-// Return  : blFunctionStatus - True if file opened succesfully, else false.
+// Outputs : pstFile - pointer to the opened file.
+// Return  : True if file opened successfully else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
@@ -57,10 +57,10 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
 }
 
 //*************************.fileOperationClose.*********************************
-// Purpose : To close the already opened files.
+// Purpose : Close the file.
 // Inputs  : pstFile - Pointer to the file.
 // Outputs : None.
-// Return  : blFunctionStatus - True if file closed successfully, else false.
+// Return  : True if file closed successfully, else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationClose(FILE *pstFile)
@@ -87,10 +87,10 @@ bool fileOperationClose(FILE *pstFile)
 }
 
 //***************************.fileOperationSize.********************************
-// Purpose : To find out the size of input file.
-// Inputs  : pstFile - File pointer.
-// Outputs : pulFileSize - Pointer to size variable updated with size.
-// Return  : blFunctionStatus - True if size variable updated, else false.
+// Purpose : Determine the size of file.
+// Inputs  : pstFile - file pointer.
+// Outputs : pulFileSize - Pointer to the size variable.
+// Return  : True if size variable updated, else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
@@ -113,16 +113,14 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 }
 
 //****************************.fileOperationCopy.*******************************
-// Purpose : To copy contents from source file to destination file.
-// Inputs  : pstFile - Source file pointer.
-//           pstOutputFile - Destination file pointer.
-//           pulFileSize - size of the file.
-// Outputs : None.
-// Return  : blFunctionStatus - True if file contents copied successfully, 
-//           else false.
+// Purpose : Copy contents from a file to another file.
+// Inputs  : pstFile - file pointer.
+//           ulFileSize - size of the file.
+// Outputs : pstOutputFile - copy file pointer.
+// Return  : True if file contents copied successfully, else false.
 // Notes   : None.
 //******************************************************************************
-bool fileOperationCopy(uint32 pulFileSize, FILE *pstFile, FILE *pstOutputFile)
+bool fileOperationCopy(uint32 ulFileSize, FILE *pstFile, FILE *pstOutputFile)
 {
     bool blFunctionStatus = false;
     void *pFileStorage = NULL;
@@ -131,7 +129,7 @@ bool fileOperationCopy(uint32 pulFileSize, FILE *pstFile, FILE *pstOutputFile)
 
     if ((NULL != pstFile) && (NULL != pstOutputFile))
     {
-        pFileStorage = malloc(pulFileSize);
+        pFileStorage = malloc(ulFileSize);
 
         if (pFileStorage != NULL)
         {
@@ -143,7 +141,7 @@ bool fileOperationCopy(uint32 pulFileSize, FILE *pstFile, FILE *pstOutputFile)
                 ulTotalCopyCount += ulFileCharacterCount;
             }
 
-            if (pulFileSize == ulTotalCopyCount)
+            if (ulFileSize == ulTotalCopyCount)
             {
                 blFunctionStatus = true;
             }

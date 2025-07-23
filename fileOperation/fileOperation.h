@@ -2,8 +2,7 @@
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved 
 //******************************************************************************
-// Summary : Contains all global constants and forward declarations required for 
-//           fileOperation.c file functions. 
+// Summary : Contains global constants and forward declarations.
 // Note    : None
 //******************************************************************************
 #ifndef _FILE_OPERATION_H

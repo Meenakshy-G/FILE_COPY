@@ -1,4 +1,4 @@
-//**************************** FileCopyApp *************************************
+//**************************** FileListApp *************************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
@@ -27,7 +27,7 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose : List all files inside the given directory path.
+// Purpose : List all files inside the given directory.
 // Inputs  : argc - Input argument count.
 //           argv[] - Input directory path.
 // Outputs : None.
@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
 
         if (NULL != pcDirectoryPath)
         {
-            if (true == listFilesCheckDirectory(pcDirectoryPath))
+            if (false == listFilesCheckDirectory(pcDirectoryPath))
             {
-                printf("Files listed succesfully\n");
+                printf("Files cannot be listed\n");
             }
         }
         else

@@ -3,7 +3,7 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : listFiles.c
-// Summary : Contains the program to link and list all the files in a directory.
+// Summary : Contains the program to sort and list all the files in a directory.
 // Note    : Header file included.
 // Author  : Meenakshy G
 // Date    : 18/JULY/2025
@@ -20,11 +20,11 @@
 #include "listFiles.h"
 #include "directoryOperation.h"
 
-//******************************* Local Types **********************************
+//****************************** Local Types ***********************************
 
-//***************************** Local Constants ********************************
+//****************************** Local Constants *******************************
 
-//***************************** Local Variables ********************************
+//****************************** Local Variables *******************************
 
 //****************************** Local Functions *******************************
 bool listFilesCreatePath(char *pcFileName, char *pcPath, char **ppcFullPath);
@@ -289,7 +289,7 @@ bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
 // Purpose : Create nodes for linked list.
 // Inputs  : pcName - file name pointer.
 //           pcExtension - extension pointer.
-//           pulSize - size pointer.
+//           ulSize - size pointer.
 // Outputs : None
 // Return  : True if successfully created node for each file, else false
 // Notes   : None.
@@ -390,6 +390,7 @@ bool listFilesFreeLink(FILE_DETAILS **ppstHeadNode)
             pstCurrentNode = pstNode;
             pstNode = pstNode->pstNext;
             free(pstCurrentNode);
+            pstCurrentNode = NULL;
         }
 
         blFunctionStatus = true;

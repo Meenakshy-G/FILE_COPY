@@ -29,7 +29,8 @@
 //****************************** Local Functions *******************************
 bool listFilesCreatePath(char *pcFileName, char *pcPath, char **ppcFullPath);
 bool listFilesAccessEach(struct dirent *pstDirectoryContents, char *pcFullPath,
-                         char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode);
+                         char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode,
+                         bool *blCheckFileOpen, FILE **pstFilePointer);
 bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
                        FILE_DETAILS **ppstHeadNode);
 bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
@@ -52,6 +53,9 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
     FILE_DETAILS *pstHeadNode = NULL;
     bool blFullPathExist = false;
     char *pcFullPath = NULL;
+    bool blCheckDirectoryOpen = false;
+    bool blCheckFileOpen = false;
+    FILE *pstFilePointer = NULL;
 
     do
     {
@@ -68,6 +72,8 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
             break;
         }
 
+        blCheckDirectoryOpen = true;
+
         if ((NULL == pstDirectoryPointer) && (NULL == pstDirectoryContents))
         {
             printf("Invalid directory: Cannot be opened");
@@ -81,7 +87,9 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
                 if (false == (listFilesAccessEach(pstDirectoryContents,
                                                   pcFullPath,
                                                   pcDirectoryPath,
-                                                  &pstHeadNode)))
+                                                  &pstHeadNode,
+                                                  &blCheckFileOpen,
+                                                  &pstFilePointer)))
                 {
                     printf("Cannot Access Each File\n");
                 }
@@ -98,12 +106,28 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
 
         blFunctionStatus = true;
 
-    } while (blFunctionStatus == false);
+    } while (false == blFunctionStatus);
 
     if (true == blFullPathExist)
     {
         free(pcFullPath);
         pcFullPath = NULL;
+    }
+
+    if (true == blCheckDirectoryOpen)
+    {
+       if (false == directoryOperationClose(&pstDirectoryPointer))
+       {
+            printf("Cannot Close Directory");
+       }
+    }
+
+    if (true == blCheckFileOpen)
+    {
+        if (false == fileOperationClose(pstFilePointer))
+        {
+            printf("Cannot close file");
+        }
     }
 
     return blFunctionStatus;
@@ -118,19 +142,18 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
 // Notes   : None.
 //******************************************************************************
 bool listFilesAccessEach(struct dirent *pstDirectoryContents, char *pcFullPath,
-                         char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode)
+                         char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode,
+                         bool *blCheckFileOpen, FILE **pstFilePointer)
 {
-    FILE *pstFilePointer = NULL;
     uint32 ulFileSize = 0;
     int8 *pcNameOfFile = NULL;
     int8 *pcFileName = NULL;
     int8 *pcExtension = NULL;
     bool blExtensionStatus = false;
     bool blFunctionStatus = false;
-    bool blCheckFileOpen = false;
 
     if ((NULL != pstDirectoryContents) && (NULL != pcDirectoryPath) &&
-        (NULL != ppstHeadNode))
+        (NULL != ppstHeadNode) && (NULL != pstFilePointer))
     {
         do
         {
@@ -149,16 +172,17 @@ bool listFilesAccessEach(struct dirent *pstDirectoryContents, char *pcFullPath,
                 break;
             }
 
-            if (false == fileOperationOpen(&pstFilePointer, pcFullPath, READ))
+            if (false == fileOperationOpen(pstFilePointer, pcFullPath, READ))
             {
                 printf("Cannot open file: %s\n", pcFullPath);
                 break;
             }
 
-            if (false == fileOperationSize(pstFilePointer, &ulFileSize))
+            *blCheckFileOpen = true;
+
+            if (false == fileOperationSize(*pstFilePointer, &ulFileSize))
             {
                 printf("Cannot get size for file: %s\n", pcFullPath);
-                blCheckFileOpen = true;
                 break;
             }
 
@@ -191,15 +215,7 @@ bool listFilesAccessEach(struct dirent *pstDirectoryContents, char *pcFullPath,
 
             blFunctionStatus = true;
 
-        } while (blFunctionStatus == false);
-
-        if (true == blCheckFileOpen)
-        {
-            if (false == fileOperationClose(pstFilePointer))
-            {
-                printf("Cannot close file");
-            }
-        }
+        } while (false == blFunctionStatus);
     }
 
     return blFunctionStatus;

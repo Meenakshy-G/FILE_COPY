@@ -3,7 +3,7 @@
 // All Rights Reserved
 //******************************************************************************
 // File    : fileOperation.c
-// Summary : Contains the functions which does the operations on file.
+// Summary : Contains the functions for file operations.
 // Note    : Header file included.
 // Author  : Meenakshy G
 // Date    : 11/JULY/2025
@@ -136,6 +136,7 @@ bool fileOperationFindExtension(char *pcFileName, char **ppcExtension,
             *ppcExtension = cExtension;
 
             if (NULL != pblExtensionStatus)
+
             {
                 *pblExtensionStatus = true;
             }

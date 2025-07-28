@@ -28,11 +28,11 @@
 
 //****************************** Local Functions *******************************
 bool listFilesCreatePath(char *pcFileName, char *pcPath, char **ppcFullPath);
-bool listFilesAccessEach(struct dirent *pstDirectoryContents,char *pcFullPath,
+bool listFilesAccessEach(struct dirent *pstDirectoryContents, char *pcFullPath,
                          char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode);
-bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
                        FILE_DETAILS **ppstHeadNode);
-bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
                          FILE_DETAILS **ppstNode);
 bool listFilesPrint(FILE_DETAILS **ppstHeadNode);
 bool listFilesFreeLink(FILE_DETAILS **ppstHeadNode);
@@ -79,8 +79,8 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
             if (FILE_TYPE == (pstDirectoryContents)->d_type)
             {
                 if (false == (listFilesAccessEach(pstDirectoryContents,
-                                                  pcFullPath, 
-                                                  pcDirectoryPath, 
+                                                  pcFullPath,
+                                                  pcDirectoryPath,
                                                   &pstHeadNode)))
                 {
                     printf("Cannot Access Each File\n");
@@ -103,7 +103,7 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
     if (true == blFullPathExist)
     {
         free(pcFullPath);
-        pcFullPath = NULL; 
+        pcFullPath = NULL;
     }
 
     return blFunctionStatus;
@@ -117,7 +117,7 @@ bool listFilesCheckDirectory(char *pcDirectoryPath)
 // Return  : True if successfully accessed each file, else false.
 // Notes   : None.
 //******************************************************************************
-bool listFilesAccessEach(struct dirent *pstDirectoryContents,char *pcFullPath,
+bool listFilesAccessEach(struct dirent *pstDirectoryContents, char *pcFullPath,
                          char *pcDirectoryPath, FILE_DETAILS **ppstHeadNode)
 {
     FILE *pstFilePointer = NULL;
@@ -127,7 +127,7 @@ bool listFilesAccessEach(struct dirent *pstDirectoryContents,char *pcFullPath,
     int8 *pcExtension = NULL;
     bool blExtensionStatus = false;
     bool blFunctionStatus = false;
-    bool blCheckFileOpen  = false;
+    bool blCheckFileOpen = false;
 
     if ((NULL != pstDirectoryContents) && (NULL != pcDirectoryPath) &&
         (NULL != ppstHeadNode))
@@ -182,7 +182,7 @@ bool listFilesAccessEach(struct dirent *pstDirectoryContents,char *pcFullPath,
                 pcExtension = (int8 *)"No Extension";
             }
 
-            if (false == listFilesLinkNode(pcNameOfFile, pcExtension, 
+            if (false == listFilesLinkNode(pcNameOfFile, pcExtension,
                                            ulFileSize, ppstHeadNode))
             {
                 printf("Cannot link the nodes\n");
@@ -213,7 +213,7 @@ bool listFilesAccessEach(struct dirent *pstDirectoryContents,char *pcFullPath,
 // Return  : True if successfully formed the full path, else false.
 // Notes   : None.
 //******************************************************************************
-bool listFilesCreatePath(char *pcFileName, char *pcPath, char **pcFullPath)
+bool listFilesCreatePath(char *pcFileName, char *pcPath, char **ppcFullPath)
 {
     bool blFunctionStatus = false;
     uint32 ulPathLength = 0;
@@ -222,13 +222,13 @@ bool listFilesCreatePath(char *pcFileName, char *pcPath, char **pcFullPath)
     {
         ulPathLength = strlen(pcFileName) + strlen(FILE_SEPARATOR) +
                        strlen(pcPath) + 1;
-        *pcFullPath = (char *)malloc(ulPathLength);
+        *ppcFullPath = (char *)malloc(ulPathLength);
 
-        if (NULL != *pcFullPath)
+        if (NULL != *ppcFullPath)
         {
-            strcat(*pcFullPath, pcPath);
-            strcat(*pcFullPath, FILE_SEPARATOR);
-            strcat(*pcFullPath, pcFileName);
+            strcat(*ppcFullPath, pcPath);
+            strcat(*ppcFullPath, FILE_SEPARATOR);
+            strcat(*ppcFullPath, pcFileName);
             blFunctionStatus = true;
         }
     }
@@ -245,7 +245,7 @@ bool listFilesCreatePath(char *pcFileName, char *pcPath, char **pcFullPath)
 // Return  : True if successfully created link, else false.
 // Notes   : None.
 //******************************************************************************
-bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
                        FILE_DETAILS **ppstHeadNode)
 {
     bool blFunctionStatus = false;
@@ -254,23 +254,29 @@ bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
 
     if ((NULL != pcName) && (NULL != pcExtension) && (NULL != ppstHeadNode))
     {
-        listFilesCreateNode(pcName, pcExtension, pulSize, &pstNewNode);
-
-        if (*ppstHeadNode == NULL)
+        if (true == listFilesCreateNode(pcName, pcExtension, ulSize, 
+                                        &pstNewNode))
         {
-            *ppstHeadNode = pstNewNode;
-        }
-        else
-        {
-            pstCurrentNode = *ppstHeadNode;
-
-            while (NULL != pstCurrentNode->pstNext)
+            if ((NULL == *ppstHeadNode) || 
+                (pstNewNode->ulFileSize < (*ppstHeadNode)->ulFileSize))
             {
-                pstCurrentNode = pstCurrentNode->pstNext;
+                pstNewNode->pstNext = *ppstHeadNode;
+                *ppstHeadNode = pstNewNode;
             }
+            else
+            {
+                pstCurrentNode = *ppstHeadNode;
 
-            pstCurrentNode->pstNext = pstNewNode;
+                while ((NULL != pstCurrentNode->pstNext) &&
+                       (pstCurrentNode->pstNext->ulFileSize < 
+                                                    pstNewNode->ulFileSize))
+                {
+                    pstCurrentNode = pstCurrentNode->pstNext;
+                }
 
+                pstNewNode->pstNext = pstCurrentNode->pstNext;
+                pstCurrentNode->pstNext = pstNewNode;
+            }
         }
 
         blFunctionStatus = true;
@@ -288,7 +294,7 @@ bool listFilesLinkNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
 // Return  : True if successfully created node for each file, else false
 // Notes   : None.
 //******************************************************************************
-bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
+bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 ulSize,
                          FILE_DETAILS **ppstNewNode)
 {
     bool blFunctionStatus = false;
@@ -306,14 +312,15 @@ bool listFilesCreateNode(int8 *pcName, int8 *pcExtension, uint32 pulSize,
                 strcpy((char *)(*ppstNewNode)->ucFileName, (char *)pcName);
             }
 
-            (*ppstNewNode)->ucFileType = malloc(strlen((char *)pcExtension) + 1);
+            (*ppstNewNode)->ucFileType = malloc(strlen
+                                               ((char *)pcExtension) + 1);
 
             if (NULL != (*ppstNewNode)->ucFileType)
             {
                 strcpy((char *)(*ppstNewNode)->ucFileType, (char *)pcExtension);
             }
 
-            (*ppstNewNode)->ulFileSize = pulSize;
+            (*ppstNewNode)->ulFileSize = ulSize;
             (*ppstNewNode)->pstNext = NULL;
             blFunctionStatus = true;
         }
@@ -342,17 +349,14 @@ bool listFilesPrint(FILE_DETAILS **ppstHeadNode)
     {
         pstCurrentNode = *ppstHeadNode;
 
-        if (NULL != pstCurrentNode)
+        while (pstCurrentNode != NULL)
         {
-            while (pstCurrentNode != NULL)
-            {
-                printf("File Name: %s,  File Type: %s",
-                                                pstCurrentNode->ucFileName,
-                                                pstCurrentNode->ucFileType);
-                printf("  File Size: %lu bytes\n\n",
-                                                 pstCurrentNode->ulFileSize);
-                pstCurrentNode = pstCurrentNode->pstNext;
-            }
+            
+            *ppstHeadNode = (*ppstHeadNode)->pstNext;
+            printf("File Name: %s,  File Type: %s", pstCurrentNode->ucFileName,
+                                                    pstCurrentNode->ucFileType);
+            printf("  File Size: %lu bytes\n\n", pstCurrentNode->ulFileSize);
+            pstCurrentNode = pstCurrentNode->pstNext;
         }
 
         if (true == listFilesFreeLink(ppstHeadNode))
@@ -374,7 +378,7 @@ bool listFilesPrint(FILE_DETAILS **ppstHeadNode)
 bool listFilesFreeLink(FILE_DETAILS **ppstHeadNode)
 {
     bool blFunctionStatus = false;
-    FILE_DETAILS *pstCurrentNode =  NULL;
+    FILE_DETAILS *pstCurrentNode = NULL;
     FILE_DETAILS *pstNode = NULL;
 
     if (NULL != ppstHeadNode)
@@ -392,14 +396,6 @@ bool listFilesFreeLink(FILE_DETAILS **ppstHeadNode)
     }
 
     return blFunctionStatus;
-}
-
-bool listFilesSort(FILE_DETAILS **ppstHeadNode)
-{
-    bool blFunctionStatus = false;
-    FILE_DETAILS *pstCurrentNode = NULL;
-    FILE_DETAILS *pstNode = NULL;
-    
 }
 //******************************************************************************
 // EOF

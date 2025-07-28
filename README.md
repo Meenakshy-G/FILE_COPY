@@ -3,6 +3,7 @@
 Project to list all the files in a given directory, if provided with the path 
 to the directory, using linked list.
 The list contains the name of the file , file type and file size.
+The list of file is sorted according to increase in file size.
 
 **Features**
 

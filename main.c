@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
         if (NULL != pcDirectoryPath)
         {
-            if (false == listFilesCheckDirectory(pcDirectoryPath))
+            if (false == listFilesCheckDirectory((int8 *)pcDirectoryPath))
             {
                 printf("Files cannot be listed\n");
             }

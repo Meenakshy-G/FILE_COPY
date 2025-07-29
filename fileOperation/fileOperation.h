@@ -23,10 +23,10 @@
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-bool fileOperationOpen(FILE **pstFile, char *pstFileName, char *pstMode);
+bool fileOperationOpen(FILE **pstFile, int8 *pcFileName, int8 *pstMode);
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize);
 bool fileOperationClose(FILE *pstFile);
-bool fileOperationFindExtension(char *pcFileName, char **ppcExtension,
+bool fileOperationFindExtension(int8 *pcFileName, int8 **ppcExtension,
                                 bool *pblExtensionStatus);
 
 //*********************** Inline Method Implementations ************************

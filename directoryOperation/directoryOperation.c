@@ -34,13 +34,13 @@
 // Return  : True if directory opened successfully, else false.
 // Notes   : None.
 //******************************************************************************
-bool directoryOperationOpen(DIR **ppstDirectory, char **ppcPath)
+bool directoryOperationOpen(DIR **ppstDirectory, int8 **ppcPath)
 {
     bool blFunctionStatus = false;
 
     if ((NULL != ppstDirectory) && (NULL != *ppcPath))
     {
-        *ppstDirectory = opendir(*ppcPath);
+        *ppstDirectory = opendir((const char *)*ppcPath);
 
         if (NULL != *ppstDirectory)
         {

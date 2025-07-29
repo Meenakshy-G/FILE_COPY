@@ -21,7 +21,7 @@
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-bool directoryOperationOpen(DIR **ppstDirectory, char **ppcPath);
+bool directoryOperationOpen(DIR **ppstDirectory, int8 **ppcPath);
 bool directoryOperationClose(DIR **ppstDirectory);
 
 //*********************** Inline Method Implementations ************************

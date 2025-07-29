@@ -30,7 +30,7 @@ typedef struct FILE_DETAILS
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-bool listFilesCheckDirectory(char *pcDirectoryPath);
+bool listFilesCheckDirectory(int8 *pcDirectoryPath);
 
 //*********************** Inline Method Implementations ************************
 

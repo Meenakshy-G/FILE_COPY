@@ -33,13 +33,14 @@
 // Return  : True if file opened succesfully, else false.
 // Notes   : None.
 //******************************************************************************
-bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
+bool fileOperationOpen(FILE **pstFile, int8 *pcFileName, int8 *pstMode)
 {
     bool blFunctionStatus = false;
 
     if ((NULL != pstFile) && (NULL != pcFileName) && (NULL != pstMode))
     {
-        if (NULL != (*pstFile = fopen(pcFileName, pstMode)))
+        if (NULL != (*pstFile = fopen((const char*)pcFileName, 
+                                      (const char*)pstMode)))
         {
             blFunctionStatus = true;
         }
@@ -120,15 +121,16 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
 // Return  : True if extension found out successfully, else false.
 // Notes   : None.
 //******************************************************************************
-bool fileOperationFindExtension(char *pcFileName, char **ppcExtension,
+bool fileOperationFindExtension(int8 *pcFileName, int8 **ppcExtension,
                                 bool *pblExtensionStatus)
 {
     bool blFunctionStatus = false;
-    char *cExtension = NULL;
+    int8 *cExtension = NULL;
 
     if ((NULL != pcFileName) && (NULL != ppcExtension ))
     {
-        cExtension = strchr(pcFileName, EXTENSION_SEPARATION);
+        cExtension = (int8 *)strchr((const char *)pcFileName, 
+                                     EXTENSION_SEPARATION);
 
         if (cExtension != NULL)
         {
@@ -136,11 +138,10 @@ bool fileOperationFindExtension(char *pcFileName, char **ppcExtension,
             *ppcExtension = cExtension;
 
             if (NULL != pblExtensionStatus)
-
             {
                 *pblExtensionStatus = true;
             }
-    
+
             blFunctionStatus = true;
         }
         else

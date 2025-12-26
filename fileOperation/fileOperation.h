@@ -1,4 +1,4 @@
-//**************************** FileOperations **********************************
+//**************************** FileOperation ***********************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved 
 //******************************************************************************
@@ -16,15 +16,18 @@
 //******************************* Global Types *********************************
 
 //***************************** Global Constants *******************************
-#define SIZE (1)
+#define EXTENSION_SEPARATION ('.')
+#define READ ("rb")
+#define WRITE ("wb")
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-bool fileOperationOpen(FILE **pstFile, char *pstFileName, char *pstMode);
-bool fileOperationCopy(uint32 pulFileSize, FILE *pstFile, FILE *pstOutputFile);
+bool fileOperationOpen(FILE **pstFile, int8 *pcFileName, int8 *pstMode);
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize);
 bool fileOperationClose(FILE *pstFile);
+bool fileOperationFindExtension(int8 *pcFileName, int8 **ppcExtension,
+                                bool *pblExtensionStatus);
 
 //*********************** Inline Method Implementations ************************
 

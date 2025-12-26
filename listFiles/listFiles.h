@@ -1,12 +1,13 @@
-//**************************** FileCopy ****************************************
+//****************************** ListFiles *************************************
 // Copyright (c) 2025 Trenser Technology Solutions
-// All Rights Reserved 
+// All Rights Reserved
 //******************************************************************************
-// Summary : Contains global constants and forward declarations.
-// Note    : None
+// Summary : Contains type defenitions,  global constants and 
+//           forward declarations.
+// Note    : None.
 //******************************************************************************
-#ifndef _FILE_COPY_H
-#define _FILE_COPY_H
+#ifndef _LIST_FILES_H
+#define _LIST_FILES_H
 
 //******************************* Include Files ********************************
 #include <stdio.h>
@@ -14,22 +15,26 @@
 #include "../common.h"
 
 //******************************* Global Types *********************************
+typedef struct FILE_DETAILS
+{
+    uint8 *ucFileName;
+    uint8 *ucFileType;
+    uint32 ulFileSize;
+    struct FILE_DETAILS *pstNext;
+} FILE_DETAILS;
 
 //***************************** Global Constants *******************************
-#define FOLDER_SEPARATION ('/')
-#define EXTENSION_SEPARATION ('.')
-#define MODIFIER ("_copy")
-#define READ_MODE ("rb")
-#define WRITE_MODE ("wb")
+#define FILE_TYPE (8)
+#define FILE_SEPARATOR ("/")
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-bool fileCopyTool(char *pcFileName);
+bool listFilesCheckDirectory(int8 *pcDirectoryPath);
 
 //*********************** Inline Method Implementations ************************
 
 //******************************************************************************
 
-#endif // _FILE_COPY_H 
-// EOF 
+#endif // _LIST_FILES_H
+// EOF

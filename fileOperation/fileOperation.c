@@ -1,4 +1,4 @@
-//**************************** FileOperations **********************************
+//**************************** FileOperation ***********************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
@@ -27,19 +27,20 @@
 
 //****************************.fileOperationOpen.*******************************
 // Purpose : Open the file in read or write mode.
-// Inputs  : pcFileName - file name.
-//           pstMode - mode to open the file.
-// Outputs : pstFile - pointer to the opened file.
-// Return  : True if file opened successfully else false.
+// Inputs  : pcFileName - file name pointer.
+//           pstMode - open mode pointer.
+// Outputs : ppstFile - file pointer.
+// Return  : True if file opened succesfully, else false.
 // Notes   : None.
 //******************************************************************************
-bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
+bool fileOperationOpen(FILE **pstFile, int8 *pcFileName, int8 *pstMode)
 {
     bool blFunctionStatus = false;
 
     if ((NULL != pstFile) && (NULL != pcFileName) && (NULL != pstMode))
     {
-        if (NULL != (*pstFile = fopen(pcFileName, pstMode)))
+        if (NULL != (*pstFile = fopen((const char*)pcFileName, 
+                                      (const char*)pstMode)))
         {
             blFunctionStatus = true;
         }
@@ -50,15 +51,15 @@ bool fileOperationOpen(FILE **pstFile, char *pcFileName, char *pstMode)
     }
     else
     {
-        printf("Input pointer is NULL");
+        printf("Input pointer is NULL\n");
     }
 
     return blFunctionStatus;
 }
 
 //*************************.fileOperationClose.*********************************
-// Purpose : Close the file.
-// Inputs  : pstFile - Pointer to the file.
+// Purpose : Close the given file.
+// Inputs  : pstFile - file pointer.
 // Outputs : None.
 // Return  : True if file closed successfully, else false.
 // Notes   : None.
@@ -87,10 +88,10 @@ bool fileOperationClose(FILE *pstFile)
 }
 
 //***************************.fileOperationSize.********************************
-// Purpose : Determine the size of file.
+// Purpose : Determine size of the given file.
 // Inputs  : pstFile - file pointer.
-// Outputs : pulFileSize - Pointer to the size variable.
-// Return  : True if size variable updated, else false.
+// Outputs : pulFileSize - size pointer.
+// Return  : True if size is determined successfully, else false.
 // Notes   : None.
 //******************************************************************************
 bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
@@ -106,58 +107,53 @@ bool fileOperationSize(FILE *pstFile, uint32 *pulFileSize)
     }
     else
     {
-        printf("Input pointer are NULL");
+        printf("Input pointers are NULL\n");
     }
 
     return blFunctionStatus;
 }
 
-//****************************.fileOperationCopy.*******************************
-// Purpose : Copy contents from a file to another file.
-// Inputs  : pstFile - file pointer.
-//           ulFileSize - size of the file.
-// Outputs : pstOutputFile - copy file pointer.
-// Return  : True if file contents copied successfully, else false.
+//**********************.fileOperationFindExtension.****************************
+// Purpose : Find out the extension of a given file.
+// Inputs  : pcFileName - file name pointer.
+// Outputs : ppcExtension - extension address pointer.
+//           pblExtensionStatus - extension status pointer.
+// Return  : True if extension found out successfully, else false.
 // Notes   : None.
 //******************************************************************************
-bool fileOperationCopy(uint32 ulFileSize, FILE *pstFile, FILE *pstOutputFile)
+bool fileOperationFindExtension(int8 *pcFileName, int8 **ppcExtension,
+                                bool *pblExtensionStatus)
 {
     bool blFunctionStatus = false;
-    void *pFileStorage = NULL;
-    uint32 ulFileCharacterCount = 0;
-    uint32 ulTotalCopyCount = 0;
+    int8 *cExtension = NULL;
 
-    if ((NULL != pstFile) && (NULL != pstOutputFile))
+    if ((NULL != pcFileName) && (NULL != ppcExtension ))
     {
-        pFileStorage = malloc(ulFileSize);
+        cExtension = (int8 *)strchr((const char *)pcFileName, 
+                                     EXTENSION_SEPARATION);
 
-        if (pFileStorage != NULL)
+        if (cExtension != NULL)
         {
-            while ((ulFileCharacterCount = fread(pFileStorage, SIZE,
-                                                 sizeof(pFileStorage),
-                                                 pstFile)) > 0)
+            cExtension ++;
+            *ppcExtension = cExtension;
+
+            if (NULL != pblExtensionStatus)
             {
-                fwrite(pFileStorage, SIZE, ulFileCharacterCount, pstOutputFile);
-                ulTotalCopyCount += ulFileCharacterCount;
+                *pblExtensionStatus = true;
             }
 
-            if (ulFileSize == ulTotalCopyCount)
-            {
-                blFunctionStatus = true;
-            }
-            else
-            {
-                printf("Copying Failed\n");
-            }
+            blFunctionStatus = true;
         }
         else
         {
-            printf("Memory allocation failed\n");
+            *pblExtensionStatus = false;
+            blFunctionStatus = true;
         }
     }
-
-    free(pFileStorage);
-    pFileStorage = NULL;
+    else
+    {
+        printf("Cannot Find Extension: Input pointers is NULL\n");
+    }
 
     return blFunctionStatus;
 }

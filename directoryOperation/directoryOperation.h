@@ -1,33 +1,32 @@
-//**************************** FileListApp *************************************
+//****************************** directoryOperation ****************************
 // Copyright (c) 2025 Trenser Technology Solutions
-// All Rights Reserved 
+// All Rights Reserved
 //******************************************************************************
-// Summary : Contains type definitions and global constants.
-// Note    : None
+// Summary : Contains forward declarations required for directory operations.
+// Note    : None.
 //******************************************************************************
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef _DIRECTORY_OPERATION_H
+#define _DIRECTORY_OPERATION_H
 
 //******************************* Include Files ********************************
+#include <stdio.h>
+#include <stdbool.h>
+#include <dirent.h>
+#include "../common.h"
 
 //******************************* Global Types *********************************
-typedef unsigned char uint8;
-typedef signed char int8;
-typedef unsigned long uint32;
-typedef signed long int32;
-typedef unsigned short uint16;
 
 //***************************** Global Constants *******************************
-#define INPUT_ARGUMENTS (2)
-#define FIRST_ARGUMENT  (1)
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
+bool directoryOperationOpen(DIR **ppstDirectory, int8 **ppcPath);
+bool directoryOperationClose(DIR **ppstDirectory);
 
 //*********************** Inline Method Implementations ************************
 
 //******************************************************************************
 
-#endif // _COMMON_H
-// EOF 
+#endif // _DIRECTORY_OPERATION_H
+// EOF

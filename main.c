@@ -1,12 +1,12 @@
-//**************************** FileCopyApp *************************************
+//**************************** FileListApp *************************************
 // Copyright (c) 2025 Trenser Technology Solutions
 // All Rights Reserved
 //******************************************************************************
 // File    : main.c
-// Summary : Contains program to generate duplicate of a given file.
+// Summary : Contains program to list all files in a given directory.
 // Note    : Header files are included.
 // Author  : Meenakshy G
-// Date    : 11/JULY/2025
+// Date    : 18/JULY/2025
 //******************************************************************************
 //******************************* Include Files ********************************
 #include <stdio.h>
@@ -15,7 +15,8 @@
 #include <stdlib.h>
 #include "common.h"
 #include "fileOperation.h"
-#include "fileCopy.h"
+#include "directoryOperation.h"
+#include "listFiles.h"
 
 //******************************* Local Types **********************************
 
@@ -26,40 +27,36 @@
 //****************************** Local Functions *******************************
 
 //******************************.mainFunction.**********************************
-// Purpose : Generate copy of file from given file path. 
-// Inputs  : argc - Input arguments count.
-//           argv[] - Input file path.
+// Purpose : List all files inside the given directory.
+// Inputs  : argc - Input argument count.
+//           argv[] - Input directory path.
 // Outputs : None.
 // Return  : Zero.
-// Notes   : None
+// Notes   : None.
 //******************************************************************************
 int main(int argc, char *argv[])
 {
-    char *pcFileName = NULL;
+    char *pcDirectoryPath = NULL;
 
     if (INPUT_ARGUMENTS == argc)
     {
-        pcFileName = (char *)argv[FIRST_ARGUMENT];
+        pcDirectoryPath = (char *)argv[FIRST_ARGUMENT];
 
-        if (NULL != pcFileName)
+        if (NULL != pcDirectoryPath)
         {
-            if (true == fileCopyTool(pcFileName))
+            if (false == listFilesCheckDirectory((int8 *)pcDirectoryPath))
             {
-                printf("File Copy Created Successfully\n");
-            }
-            else
-            {
-                printf("Cannot Create File copy\n");
+                printf("Files cannot be listed\n");
             }
         }
         else
         {
-            printf("Cannot obtain input file argument\n");
+            printf("Cannot obtain input path argument\n");
         }
     }
     else
     {
-        printf("No Command Line Arguments Given\n");
+        printf("No Proper Command Line Arguments Given\n");
     }
 
     return 0;

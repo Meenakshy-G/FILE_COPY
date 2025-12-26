@@ -1,5 +1,5 @@
 *.exe
 copy*
 MAIN
-FILECOPYTOOL
-FILECOPY
+FILE_LIST_TOOL
+.vscode
